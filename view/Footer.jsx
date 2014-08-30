@@ -22,6 +22,7 @@ var ReactPropTypes = React.PropTypes;
 
 var Footer = React.createClass({
 
+    // TODO stats events
     mixins: [ Swarm.ReactMixin ], 
 
     /**

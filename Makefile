@@ -22,8 +22,10 @@ clean:
 	find . -name '*.min.js' | xargs rm ;
 	rm dist/*.js ;
 
-test::
-	node test/runner.js
+todo::
+	@echo
+	@git grep -w --color -n 'TO\DO'
+	@echo
 
 lint::
 	$(BIN)/jshint $(SOURCES)
