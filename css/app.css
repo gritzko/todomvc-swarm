@@ -12,29 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * @jsx React.DOM
+ * 
+ * base.css overrides 
  */
 
-var React         = require('react');
-var Swarm         = require('swarm');
-
-var TodoList = require('./model/TodoList');
-var TodoItem = require('./model/TodoItem');
-
-Swarm.env.debug = true;
-
-var TodoAppView       = require('./dist/TodoAppView');
-
-Swarm.env.localhost = new Swarm.Host('test~1');
-
-//var pageSpec = '/TodoList#example';
-var entry = new TodoItem();
-entry.set({text:'example'});
-var list = new TodoList();
-list.addObject(entry);
-
-React.renderComponent(
-    TodoAppView ({ spec: list.spec() }),
-    document.getElementById('todoapp')
-);
+/**
+ * We are not changing from display:none, but rather re-rendering instead. 
+ * Therefore this needs to be displayed normally by default.
+ */
+#todo-list li .edit {
+  display: inline;
+}

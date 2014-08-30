@@ -38,8 +38,7 @@ var TodoItem = React.createClass({
         return (
             <li
                 className={cx({
-                'completed': todo.complete,
-                'editing': this.state.isEditing
+                    'completed': todo.complete
                 })}
                 key={todo.id}>
 
