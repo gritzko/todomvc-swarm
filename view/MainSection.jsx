@@ -18,7 +18,7 @@
 
 var React = require('react');
 var Swarm = require('swarm');
-var TodoItem = require('./TodoItem');
+var TodoItemView = require('./TodoItemView');
 
 var MainSection = React.createClass({
 
@@ -44,7 +44,7 @@ var MainSection = React.createClass({
         var todos = [];
         for(var spec in objects) {
             console.log('pushing',spec);
-            todos.push( <TodoItem spec={spec}/> );
+            todos.push( <TodoItemView spec={spec} listSpec={this.props.spec}/> );
         }
 
         

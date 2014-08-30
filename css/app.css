@@ -20,6 +20,18 @@
  * We are not changing from display:none, but rather re-rendering instead. 
  * Therefore this needs to be displayed normally by default.
  */
+
+#todo-list li .toggle {
+    position: static;
+}
+
 #todo-list li .edit {
   display: inline;
+  border: none;
+  box-shadow: none;
+  width: 465px;
+  max-width: 465px;
+  max-width: 
+  position: static;
+  margin-left: 4px;
 }

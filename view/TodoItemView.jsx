@@ -18,11 +18,12 @@
 
 var React = require('react');
 var Swarm = require('swarm');
+var TodoItem = require('../model/TodoItem');
 var ReactPropTypes = React.PropTypes;
 
 var cx = require('react/lib/cx');
 
-var TodoItem = React.createClass({
+var TodoItemView = React.createClass({
 
     mixins: [ Swarm.ReactMixin ],
 
@@ -52,6 +53,7 @@ var TodoItem = React.createClass({
                     <input
                         className="edit"
                         onChange={this._onChange}
+                        onKeyUp={this._onKeyUp}
                         value={todo.text}
                         />
                     <button className="destroy" onClick={this._onDestroyClick} />
@@ -65,15 +67,28 @@ var TodoItem = React.createClass({
         this.sync.complete(this.sync.completed);
     },
 
-    _onChange: function(text) {
+    _onChange: function(event) {
+        var text = event.target.value;
         this.sync.set({text:text});
     },
 
     _onDestroyClick: function() {
         var list = Swarm.env.localhost.get(this.props.listSpec);
         list.remove(this.sync);
+    },
+
+    _onKeyUp: function(event) {
+        if (event.keyCode === ENTER_KEY_CODE) {
+            var listSpec = this.props.listSpec;
+            var list = Swarm.get(listSpec);
+            var newItem = new TodoItem({text:'new'});
+            list.addObject(newItem);
+            // TODO focus()
+        }
     }
 
 });
 
-module.exports = TodoItem;
+var ENTER_KEY_CODE = 13;
+
+module.exports = TodoItemView;
