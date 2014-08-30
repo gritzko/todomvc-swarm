@@ -34,6 +34,11 @@ entry.set({text:'example'});
 var list = new TodoList();
 list.addObject(entry);
 
+
+// TODO page ids (router)
+// TODO server, backend
+// TODO local cache
+
 React.renderComponent(
     TodoAppView ({ spec: list.spec() }),
     document.getElementById('todoapp')

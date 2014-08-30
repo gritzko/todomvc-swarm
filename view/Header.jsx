@@ -22,6 +22,7 @@ var React = require('react');
 var Header = React.createClass({
 
     render: function() {
+        // TODO list header (apart from the id)
         return (
             <header id="header">
             <h1>todos</h1>

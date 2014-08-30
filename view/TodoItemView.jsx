@@ -74,7 +74,7 @@ var TodoItemView = React.createClass({
 
     _onDestroyClick: function() {
         var list = Swarm.env.localhost.get(this.props.listSpec);
-        list.remove(this.sync);
+        list.removeObject(this.sync);
     },
 
     _onKeyUp: function(event) {

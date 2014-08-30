@@ -25,6 +25,13 @@ var Footer = React.createClass({
     // TODO stats events
     mixins: [ Swarm.ReactMixin ], 
 
+    componentDidMount: function () {
+        var self = this;
+        this.sync.onObjects(function(){
+            self.forceUpdate();
+        });
+    },
+
     /**
     * @return {object}
     */
