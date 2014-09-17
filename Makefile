@@ -8,7 +8,7 @@ VIEWS = $(patsubst view/%.jsx,dist/%.js,$(JSX_SOURCES))
 
 jsx:: $(VIEWS)
 
-all:: jsx dist todo
+all:: prepare jsx dist todo
 
 dist: jsx
 	$(BIN)/browserify TodoApp.js -o dist/TodoApp.app.js

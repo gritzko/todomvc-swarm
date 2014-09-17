@@ -32,7 +32,7 @@ Swarm.env.localhost = new Swarm.Host('test~1');
 var entry = new TodoItem();
 entry.set({text:'example'});
 var list = new TodoList();
-list.addObject(entry);
+list.append(entry);
 
 
 // TODO page ids (router)

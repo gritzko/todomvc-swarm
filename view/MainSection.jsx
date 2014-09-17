@@ -42,12 +42,21 @@ var MainSection = React.createClass({
 
         var objects = this.sync.objects;
         var todos = [];
-        for(var spec in objects) {
+        for(var i=0; i<objects.length; i++) {
+            var spec = objects[i].spec().toString();
             console.log('pushing',spec);
-            todos.push( <TodoItemView spec={spec} listSpec={this.props.spec}/> );
+            todos.push(
+                <TodoItemView
+                    key={spec}
+                    listSpec={this.props.spec}
+                    setFocus={this.props.setFocus}
+                    focused={this.props.focused}
+                />
+            );
         }
 
-        
+        console.log('focused: ',this.props.focused);
+
         return (
             <section id="main">
                 <input
@@ -63,7 +72,7 @@ var MainSection = React.createClass({
                 </ul>
             </section>
         );
-        
+
     },
 
     /**

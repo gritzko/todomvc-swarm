@@ -37,11 +37,31 @@ var TodoAppView = React.createClass({
         return (
             <div>
                 <Header spec={this.props.spec}/>
-                <MainSection spec={this.props.spec} />
+                <MainSection
+                    spec={this.props.spec}
+                    setFocus={this.setFocus}
+                    focused={this.props.focused}
+                    />
                 <Footer spec={this.props.spec} />
             </div>
         );
+    },
+
+
+    setFocus: function (spec) {
+        if (spec && spec._id) {
+            spec = spec.spec();
+        }
+        spec = new Swarm.Spec(spec,'#');
+        if (spec.pattern()!=='/#') {
+            throw new Error('invalid spec');
+        }
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
+        this.setProps({focused:spec.toString()});
     }
+
 
 });
 

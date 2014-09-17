@@ -1,8 +1,11 @@
 'use strict';
 
 var Swarm = require('swarm');
+var TodoItem = require('./TodoItem');
 
-var TodoList = Swarm.Set.extend('TodoList', {
+var TodoList = Swarm.Vector.extend('TodoList', {
+
+    objectType: TodoItem,
 
     completeAll: function() {
         for (var key in this.objects) {
@@ -10,6 +13,19 @@ var TodoList = Swarm.Set.extend('TodoList', {
             if (obj && obj._version && !obj.completed) {
                 obj.complete();
             }
+        }
+    },
+
+    removeCompleted: function () {
+        // TODO one op - repeated spec? long spec?
+        var rms = [], rm;
+        this.objects.forEach(function(obj){
+            if (obj.completed) {
+                rms.push(obj);
+            }
+        });
+        while (rm = rms.pop()) {
+            this.remove(rm);
         }
     },
 

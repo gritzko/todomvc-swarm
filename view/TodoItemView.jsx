@@ -27,6 +27,20 @@ var TodoItemView = React.createClass({
 
     mixins: [ Swarm.ReactMixin ],
 
+    restoreFocus: function () {
+        var focused = (this.props.focused||'').toString();
+        if (focused && focused==this.sync.spec()) {
+            this.refs.text.getDOMNode().focus();
+        }
+    },
+
+    componentDidUpdate: function () {
+        this.restoreFocus();
+    },
+    componentDidMount: function () {
+        this.restoreFocus();
+    },
+
     render: function() {
 
         var todo = this.sync;
@@ -53,14 +67,20 @@ var TodoItemView = React.createClass({
                     <input
                         className="edit"
                         onChange={this._onChange}
-                        onKeyUp={this._onKeyUp}
+                        onKeyDown={this._onKeyDown}
+                        onClick={this._focus}
                         value={todo.text}
+                        ref="text"
                         />
                     <button className="destroy" onClick={this._onDestroyClick} />
                 </div>
 
             </li>
         );
+    },
+
+    _focus: function () {
+        this.props.setFocus(this.sync.spec());
     },
 
     _onToggleComplete: function() {
@@ -74,17 +94,37 @@ var TodoItemView = React.createClass({
 
     _onDestroyClick: function() {
         var list = Swarm.env.localhost.get(this.props.listSpec);
-        list.removeObject(this.sync);
+        list.remove(this.sync);
     },
 
-    _onKeyUp: function(event) {
-        if (event.keyCode === ENTER_KEY_CODE) {
-            var listSpec = this.props.listSpec;
-            var list = Swarm.get(listSpec);
-            var newItem = new TodoItem({text:'new'});
-            list.addObject(newItem);
-            // TODO focus()
+    _onKeyDown: function(event) {
+        var listSpec = this.props.listSpec;
+        var list = Swarm.get(listSpec);
+        switch (event.keyCode) {
+        case 13: // ENTER
+            var newItem = new TodoItem({text:''});
+            list.insert(newItem,this.sync);
+            this.props.setFocus(newItem.spec());
+            break;
+        case 38: // UP
+            var i = list.indexOf(this.sync);
+            if (i>0) {
+                var next = list.objectAt(i-1);
+                this.props.setFocus(next);
+            }
+            break;
+        case 9:  // TAB
+        case 40: // DOWN
+            var i = list.indexOf(this.sync);
+            if (i!==-1 && i<list.length()-1) {
+                var next = list.objectAt(i+1);
+                this.props.setFocus(next);
+            }
+            break;
+        default:
+            return true;
         }
+        event.preventDefault();
     }
 
 });

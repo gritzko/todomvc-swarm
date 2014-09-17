@@ -18,16 +18,17 @@
 
 var React = require('react');
 var Swarm = require('swarm');
+var TodoItem = require('../model/TodoItem');
 var ReactPropTypes = React.PropTypes;
 
 var Footer = React.createClass({
 
     // TODO stats events
-    mixins: [ Swarm.ReactMixin ], 
+    mixins: [ Swarm.ReactMixin ],
 
     componentDidMount: function () {
         var self = this;
-        this.sync.onObjects(function(){
+        this.sync.onObjectEvent(function(){
             self.forceUpdate();
         });
     },
@@ -76,7 +77,10 @@ var Footer = React.createClass({
     * Event handler to delete all completed TODOs
     */
     _onClearCompletedClick: function() {
-        this.sync.destroyCompleted();
+        this.sync.removeCompleted();
+        if (this.sync.length()===0) {
+            this.sync.addObject(new TodoItem()); // TODO create default
+        }
     }
 
 });
