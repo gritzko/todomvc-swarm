@@ -31,20 +31,6 @@ var TodoItemView = React.createClass({
         modelType: "TodoItem"
     },
 
-    restoreFocus: function () {
-        var focused = (this.props.focused||'').toString();
-        if (focused && focused==this.sync.spec()) {
-            this.refs.text.getDOMNode().focus();
-        }
-    },
-
-    componentDidUpdate: function () {
-        this.restoreFocus();
-    },
-    componentDidMount: function () {
-        this.restoreFocus();
-    },
-
     render: function() {
 
         var todo = this.sync;
@@ -52,7 +38,7 @@ var TodoItemView = React.createClass({
 
         var bookmark = <noscript/>;
         if (todo.childList) {
-            bookmark = <span className="bookmark">&#8594;</span>;
+            bookmark = <span className="bookmark"> </span>; //&#8594;
         }
 
 
@@ -91,6 +77,11 @@ var TodoItemView = React.createClass({
 
             </li>
         );
+    },
+
+    _focus: function () {
+        var app = this.props.app;
+        app.go(this.props.UIState.listId, this.sync._id);
     },
 
     _onToggle: function () {

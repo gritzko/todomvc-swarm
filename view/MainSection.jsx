@@ -42,6 +42,7 @@ var MainSection = React.createClass({
                 <TodoItemView
                     key={spec.id()}
                     UIState={this.props.UIState}
+                    app={this.props.app}
                     tabindex={i}
                 />
             );

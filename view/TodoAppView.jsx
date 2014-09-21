@@ -38,6 +38,7 @@ var TodoAppView = React.createClass({
                 <TodoListView
                     key={list.listId}
                     depth={history.length-i-1}
+                    app={this.props.app}
                     UIState={list}
                 />
             );

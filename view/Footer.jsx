@@ -43,7 +43,7 @@ var Footer = React.createClass({
         if (stats.left===0) {
             clearCompletedButton =
                 <button
-                    id="clear-completed"
+                    className="clear-completed"
                     onClick={this._onClearCompletedClick}>
                     Clear completed ({stats.completed})
                 </button>;

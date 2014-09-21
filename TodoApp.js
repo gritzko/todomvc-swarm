@@ -34,10 +34,7 @@ function TodoApp (ssnid, listId) {
 
     this.initSwarm();
     this.installListeners();
-
-    if (listId) {
-        this.forward(listId);
-    }
+    this.parseUri();
 }
 
 TodoApp.prototype.initSwarm = function () {
@@ -49,15 +46,27 @@ TodoApp.prototype.initSwarm = function () {
     this.host.connect(this.wsServerUri, {delay: 50});
 };
 
+TodoApp.prototype.parseUri = function () {
+    var hash = window.location.hash;
+    var path = window.location.pathname;
+    var idre = Spec.reQTokExt;
+    idre.lastIndex = 0;
+    var ml = idre.exec(path), listId = ml&&ml[2];
+    idre.lastIndex = 0;
+    var mi = idre.exec(hash), itemId = mi&&mi[2];
+    if (!listId) {
+        var list = new TodoList();
+        var item = new TodoItem();
+        list.addObject(item);
+        listId = list._id;
+        itemId = item._id;
+    }
+    this.forward(listId,itemId);
+};
+
+
 TodoApp.prototype.installListeners = function () {
     var self = this;
-    window.onhashchange = function () {
-        if (self.moving) {return;}
-        var hash = window.location.hash;
-        var idre = Spec.reTokExt;
-        var m = idre.exec(hash), entryId = m&&m[0];
-        this.go(entryId);
-    }
     document.addEventListener('keydown', function (ev) {
         switch (ev.keyCode) {
             case 9:  self.forward();break; // tab
@@ -91,21 +100,26 @@ TodoApp.prototype.getList = function (listId) {
 };
 
 TodoApp.prototype.refresh = function () {
+    // rerender DOM
     React.renderComponent(
         TodoAppView ({
             key: 'root',
+            app: this,
             UIState: this.history
         }),
         document.getElementById('todoapp')
     );
+    // recover focus
     var item = this.getItem();
     var edit = document.getElementById(item._id);
     if (edit) {
         edit.focus();
     }
+    // set URI
 };
 
-// invoked by onClick and onHashChange
+// Suddenly jump to some entry in some list.
+// Invoked by onClick and onHashChange
 TodoApp.prototype.go = function (listId, itemId) {
     // find in history
     var hi = this.history;
@@ -118,6 +132,10 @@ TodoApp.prototype.go = function (listId, itemId) {
     }
     if (back===hi.length) {
         this.forward(listId,itemId);
+    }
+    var list = this.getList();
+    if ( itemId && list) { //} && list.indexOf('/TodoItem#'+itemId)!==-1 ) {
+        this.selectItem(itemId);
     }
 };
 
@@ -150,7 +168,7 @@ TodoApp.prototype.forward = function (listId, itemId) {
         }
         itemId = itemId || fwdList.objectAt(0)._id;
         window.history.pushState
-            (window.location.origin + '/' + listId + '#' + itemId);
+            ({},"",window.location.origin + '/' + listId + '#' + itemId);
         self.history.push({
             listId: listId,
             itemId: itemId
@@ -159,15 +177,28 @@ TodoApp.prototype.forward = function (listId, itemId) {
     });
 };
 
+TodoApp.prototype.selectItem = function (itemId) {
+    var list = this.getList();
+    var item = this.getItem();
+    if (itemId.constructor===Number) {
+        var i = itemId;
+        if (i>=0 && i<list.length()) { // TODO .length
+            itemId = list.objectAt(i)._id;
+        } else {
+            itemId = list.objectAt(0)._id;
+        }
+    }
+    var state = this.history[this.history.length-1];
+    state.itemId = itemId;
+    this.refresh();
+};
+
 TodoApp.prototype.up = function () {
     var list = this.getList();
     var item = this.getItem();
     var i = list.indexOf(item);
     if (i>0) {
-        var newId = list.objectAt(i-1);
-        var state = this.history[this.history.length-1];
-        state.itemId = newId._id;
-        this.refresh();
+        this.selectItem(i-1);
     }
 };
 
@@ -175,11 +206,8 @@ TodoApp.prototype.down = function () {
     var list = this.getList();
     var item = this.getItem();
     var i = list.indexOf(item);
-    if (i<list.length()-1) {
-        var newId = list.objectAt(i+1);
-        var state = this.history[this.history.length-1];
-        state.itemId = newId._id;
-        this.refresh();
+    if (i<list.length()) {
+        this.selectItem(i+1);
     }
 };
 

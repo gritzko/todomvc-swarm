@@ -53,6 +53,7 @@ var TodoListView = React.createClass({
                     key={uistate.listId}
                     list={this.sync}
                     UIState={uistate}
+                    app={this.props.app}
                     />
                 <Footer
                     list={this.sync}
