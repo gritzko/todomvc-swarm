@@ -23,24 +23,13 @@ var ReactPropTypes = React.PropTypes;
 
 var Footer = React.createClass({
 
-    // TODO stats events
-    mixins: [ Swarm.ReactMixin ],
-
-    componentDidMount: function () {
-        var self = this;
-        this.sync.onObjectEvent(function(){
-            self.forceUpdate();
-        });
-    },
-
     /**
     * @return {object}
     */
     render: function() {
 
-        var list = this.sync;
+        var list = this.props.list;
         var stats = list.stats();
-
 
         if (stats.entries === 0) {
             return <noscript />;
@@ -59,10 +48,11 @@ var Footer = React.createClass({
                     Clear completed ({stats.completed})
                 </button>;
         }
+        // TODO: show the entry's metadata
 
         return (
-            <footer id="footer">
-                <span id="todo-count">
+            <footer className="footer">
+                <span cl="todo-count">
                     <strong>
                         {stats.left}
                     </strong>

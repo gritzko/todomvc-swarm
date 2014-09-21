@@ -5,7 +5,8 @@ var Swarm = require('swarm');
 var TodoItem = Swarm.Model.extend('TodoItem', {
     defaults: {
         textID: String,
-        completed: false
+        completed: false,
+        childList: ''
     },
 
     complete: function (reverse) {

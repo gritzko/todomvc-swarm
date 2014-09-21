@@ -27,6 +27,10 @@ var TodoItemView = React.createClass({
 
     mixins: [ Swarm.ReactMixin ],
 
+    statics: {
+        modelType: "TodoItem"
+    },
+
     restoreFocus: function () {
         var focused = (this.props.focused||'').toString();
         if (focused && focused==this.sync.spec()) {
@@ -44,6 +48,13 @@ var TodoItemView = React.createClass({
     render: function() {
 
         var todo = this.sync;
+        var uistate = this.props.UIState;
+
+        var bookmark = <noscript/>;
+        if (todo.childList) {
+            bookmark = <span className="bookmark">&#8594;</span>;
+        }
+
 
         // List items should get the class 'editing' when editing
         // and 'completed' when marked as completed.
@@ -53,7 +64,8 @@ var TodoItemView = React.createClass({
         return (
             <li
                 className={cx({
-                    'completed': todo.complete
+                    'completed': todo.completed,
+                    'selected': this.sync._id===uistate.itemId
                 })}
                 key={todo.id}>
 
@@ -71,8 +83,10 @@ var TodoItemView = React.createClass({
                         onClick={this._focus}
                         value={todo.text}
                         ref="text"
+                        tabIndex={this.props.tabindex}
                         />
                     <button className="destroy" onClick={this._onDestroyClick} />
+                    {bookmark}
                 </div>
 
             </li>
@@ -80,7 +94,10 @@ var TodoItemView = React.createClass({
     },
 
     _focus: function () {
-        this.props.setFocus(this.sync.spec());
+        //this.props.setFocus(this.sync.spec());
+        //window.history.replaceState
+        //    ({},"test",window.location.pathname+'#'+this.sync.spec());
+        window.location.hash = this.sync._id;
     },
 
     _onToggleComplete: function() {
@@ -98,33 +115,16 @@ var TodoItemView = React.createClass({
     },
 
     _onKeyDown: function(event) {
-        var listSpec = this.props.listSpec;
-        var list = Swarm.get(listSpec);
+        var uistate = this.props.UIState;
         switch (event.keyCode) {
-        case 13: // ENTER
-            var newItem = new TodoItem({text:''});
-            list.insert(newItem,this.sync);
-            this.props.setFocus(newItem.spec());
-            break;
-        case 38: // UP
-            var i = list.indexOf(this.sync);
-            if (i>0) {
-                var next = list.objectAt(i-1);
-                this.props.setFocus(next);
-            }
-            break;
-        case 9:  // TAB
-        case 40: // DOWN
-            var i = list.indexOf(this.sync);
-            if (i!==-1 && i<list.length()-1) {
-                var next = list.objectAt(i+1);
-                this.props.setFocus(next);
-            }
-            break;
-        default:
-            return true;
+            case 13: uistate.create();break; // enter
+            case 38: uistate.up();    break;
+            case 40: uistate.down();  break;
+            case 9:  uistate.right(); break; // tab
+            default: return true;
         }
-        event.preventDefault();
+        this.refs.text.getDOMNode().blur();
+        return false;
     }
 
 });

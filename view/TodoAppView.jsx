@@ -23,45 +23,31 @@
 
 var React = require('react');
 var Swarm = require('swarm');
-
-var Header = require('./Header');
-var MainSection = require('./MainSection');
-var Footer = require('./Footer');
+var TodoListView = require('./TodoListView');
 
 
 var TodoAppView = React.createClass({
 
-    mixins: [Swarm.ReactMixin],
-
     render: function() {
+
+        var todoLists = [];
+        var history = this.props.UIState;
+        for(var i=0; i<history.length; i++) {
+            var list = history[i];
+            todoLists.push(
+                <TodoListView
+                    key={list.listId}
+                    depth={history.length-i-1}
+                    UIState={list}
+                />
+            );
+        }
         return (
-            <div>
-                <Header spec={this.props.spec}/>
-                <MainSection
-                    spec={this.props.spec}
-                    setFocus={this.setFocus}
-                    focused={this.props.focused}
-                    />
-                <Footer spec={this.props.spec} />
+            <div className="todopane">
+                {todoLists}
             </div>
         );
-    },
-
-
-    setFocus: function (spec) {
-        if (spec && spec._id) {
-            spec = spec.spec();
-        }
-        spec = new Swarm.Spec(spec,'#');
-        if (spec.pattern()!=='/#') {
-            throw new Error('invalid spec');
-        }
-        if (document.activeElement) {
-            document.activeElement.blur();
-        }
-        this.setProps({focused:spec.toString()});
     }
-
 
 });
 

@@ -22,22 +22,13 @@ var React = require('react');
 var Header = React.createClass({
 
     render: function() {
-        // TODO list header (apart from the id)
+        // TODO list some meaningful header (apart from the id)
+        //<h1>todos</h1>
         return (
             <header id="header">
-            <h1>todos</h1>
             </header>
         );
     },
-
-    /**
-    * Event handler called within TodoTextInput.
-    * Defining this here allows TodoTextInput to be used in multiple places
-    * in different ways.
-    * @param {string} text
-    */
-    _onSave: function(text) {
-    }
 
 });
 

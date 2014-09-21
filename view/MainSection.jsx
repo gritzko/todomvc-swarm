@@ -22,17 +22,11 @@ var TodoItemView = require('./TodoItemView');
 
 var MainSection = React.createClass({
 
-    mixins: [Swarm.ReactMixin],
-
-
-    statics: {
-        modelType: "TodoList" //function () { return TodoList; }
-    },
-
 
     render: function() {
 
-        var stats = this.sync.stats();
+        var sync = this.props.list;
+        var stats = sync.stats();
 
         // This section should be hidden by default
         // and shown when there are todos.
@@ -40,17 +34,15 @@ var MainSection = React.createClass({
             return <noscript/>;
         }
 
-        var objects = this.sync.objects;
+        var objects = sync.objects;
         var todos = [];
         for(var i=0; i<objects.length; i++) {
-            var spec = objects[i].spec().toString();
-            console.log('pushing',spec);
+            var spec = objects[i].spec();
             todos.push(
                 <TodoItemView
-                    key={spec}
-                    listSpec={this.props.spec}
-                    setFocus={this.props.setFocus}
-                    focused={this.props.focused}
+                    key={spec.id()}
+                    UIState={this.props.UIState}
+                    tabindex={i}
                 />
             );
         }
@@ -58,16 +50,16 @@ var MainSection = React.createClass({
         console.log('focused: ',this.props.focused);
 
         return (
-            <section id="main">
+            <section className="main_section">
                 <input
-                    id="toggle-all"
+                    className="toggle-all"
                     type="checkbox"
                     onChange={this._onToggleCompleteAll}
                     checked={this.props.areAllComplete ? 'checked' : ''}>
                 </input>
                 <label htmlFor="toggle-all">Mark all as complete</label>
 
-                <ul id="todo-list">
+                <ul>
                     {todos}
                 </ul>
             </section>
@@ -79,7 +71,7 @@ var MainSection = React.createClass({
     * Event handler to mark all TODOs as complete
     */
     _onToggleCompleteAll: function() {
-        this.sync.completeAll();
+        this.props.list.completeAll();
     }
 
 });
