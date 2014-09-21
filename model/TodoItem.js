@@ -9,8 +9,12 @@ var TodoItem = Swarm.Model.extend('TodoItem', {
         childList: ''
     },
 
-    complete: function (reverse) {
-        this.set({ completed: !reverse });
+    toggle: function () {
+        this.set({ completed: !this.completed });
+    },
+
+    complete: function () {
+        this.set({ completed: true });
     }
 
 });

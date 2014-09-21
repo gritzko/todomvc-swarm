@@ -255,7 +255,7 @@ label[for='toggle-all'] {
 	bottom: -31px;
 	left: 0;
 	height: 20px;
-	z-index: 1;
+	z-index: -2;
 	text-align: center;
 }
 
@@ -347,8 +347,8 @@ label[for='toggle-all'] {
 	}
 
 	.toggle-all {
-		top: -56px;
-		left: -15px;
+		top: -45px;
+		left: -20px;
 		width: 65px;
 		height: 41px;
 		-webkit-transform: rotate(90deg);

@@ -74,12 +74,12 @@ var TodoItemView = React.createClass({
                         className="toggle"
                         type="checkbox"
                         checked={todo.completed}
-                        onChange={this._onToggleComplete}
+                        onChange={this._onToggle}
                         />
                     <input
+                        id={this.sync._id}
                         className="edit"
                         onChange={this._onChange}
-                        onKeyDown={this._onKeyDown}
                         onClick={this._focus}
                         value={todo.text}
                         ref="text"
@@ -93,15 +93,8 @@ var TodoItemView = React.createClass({
         );
     },
 
-    _focus: function () {
-        //this.props.setFocus(this.sync.spec());
-        //window.history.replaceState
-        //    ({},"test",window.location.pathname+'#'+this.sync.spec());
-        window.location.hash = this.sync._id;
-    },
-
-    _onToggleComplete: function() {
-        this.sync.complete(this.sync.completed);
+    _onToggle: function () {
+        this.sync.toggle();
     },
 
     _onChange: function(event) {
@@ -110,21 +103,7 @@ var TodoItemView = React.createClass({
     },
 
     _onDestroyClick: function() {
-        var list = Swarm.env.localhost.get(this.props.listSpec);
-        list.remove(this.sync);
-    },
-
-    _onKeyDown: function(event) {
-        var uistate = this.props.UIState;
-        switch (event.keyCode) {
-            case 13: uistate.create();break; // enter
-            case 38: uistate.up();    break;
-            case 40: uistate.down();  break;
-            case 9:  uistate.right(); break; // tab
-            default: return true;
-        }
-        this.refs.text.getDOMNode().blur();
-        return false;
+        app.delete(this.props.UIState.listId, this.sync._id);
     }
 
 });

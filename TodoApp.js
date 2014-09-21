@@ -36,7 +36,7 @@ function TodoApp (ssnid, listId) {
     this.installListeners();
 
     if (listId) {
-        this.right(listId);
+        this.forward(listId);
     }
 }
 
@@ -44,7 +44,7 @@ TodoApp.prototype.initSwarm = function () {
     this.storage = new Swarm.SharedWebStorage();
     this.storage.authoritative = true;
     this.wsServerUri = 'ws://'+window.location.host;
-    this.host = Swarm.env.localhost = 
+    this.host = Swarm.env.localhost =
         new Swarm.Host(this.ssnid,'',this.storage);
     this.host.connect(this.wsServerUri, {delay: 50});
 };
@@ -60,28 +60,34 @@ TodoApp.prototype.installListeners = function () {
     }
     document.addEventListener('keydown', function (ev) {
         switch (ev.keyCode) {
-            case 9: // tab
-            case 39: self.right(); break;
-            case 27: // esc
-            case 37: self.left();  break;
-            case 40: self.down();  break;
-            case 38: self.up();    break;
-            case 32: self.toggle();break;
-            case 13: self.create();break;
+            case 9:  self.forward();break; // tab
+            case 27: self.back();   break; // esc
+            case 40: self.down();   break; // down arrow
+            case 38: self.up();     break; // up arrow
+            case 45: self.toggle(); break; // insert
+            case 13: self.create(); break; // enter
+            case 46: self.delete(); break; // delete
             default: return true;
         }
+        ev.preventDefault();
         return false;
     });
 };
 
-TodoApp.prototype.getActiveItem = function () {
-    var state = this.history[this.history.length-1];
-    var list = this.host.get('/TodoList#'+state.listId);
-    if (!state.itemId) {
-        return undefined;
+TodoApp.prototype.getItem = function (itemId) {
+    if (!itemId) {
+        var state = this.history[this.history.length-1];
+        itemId = state.itemId;
     }
-    var item = this.host.get('/TodoItem#'+state.itemId);
-    return item;
+    return this.host.get('/TodoItem#'+itemId);
+};
+
+TodoApp.prototype.getList = function (listId) {
+    if (!listId) {
+        var state = this.history[this.history.length-1];
+        listId = state.listId;
+    }
+    return this.host.get('/TodoList#'+listId);
 };
 
 TodoApp.prototype.refresh = function () {
@@ -92,26 +98,30 @@ TodoApp.prototype.refresh = function () {
         }),
         document.getElementById('todoapp')
     );
+    var item = this.getItem();
+    var edit = document.getElementById(item._id);
+    if (edit) {
+        edit.focus();
+    }
 };
 
 // invoked by onClick and onHashChange
 TodoApp.prototype.go = function (listId, itemId) {
     // find in history
     var hi = this.history;
-    var back=0; 
+    var back=0;
     while (back<hi.length && hi[hi.length-back-1].listId!==listId) {
         back++;
     }
     while (back--) {
-        this.left();
+        this.back();
     }
     if (back===hi.length) {
-        // finally, go right
-        this.right(listId,itemId);
+        this.forward(listId,itemId);
     }
 };
 
-TodoApp.prototype.left = function () {
+TodoApp.prototype.back = function () {
     this.moving = true;
     this.history.pop();
     window.history.back();
@@ -119,71 +129,81 @@ TodoApp.prototype.left = function () {
     this.refresh();
 };
 
-TodoApp.prototype.right = function (listId, itemId) {
+TodoApp.prototype.forward = function (listId, itemId) {
+    var self = this;
+    var fwdList;
     if (!listId) {
-        var item = this.getActiveItem();
+        var item = this.getItem();
         listId = item.childList;
     }
     if (!listId) {
-        // TODO create
-        throw new Error("no active item > nowhere to go");
+        fwdList = new TodoList();
+        listId = fwdList._id;
+        item.set({childList: listId});
+    } else {
+        fwdList = this.host.get('/TodoList#'+listId); // TODO fn+id sig
     }
-    if (!itemId) {
-        var list = this.host.get('/TodoList#'+listId); // TODO fn+id sig
-        if (list._version && list.length()){
-            var item1 = list.objectAt(0);
-            itemId = item1._id;
+    // we may need to fetch the data from the server so we use a callback, yes
+    fwdList.once('.init',function(){
+        if (!fwdList.length()) {
+            fwdList.addObject(new TodoItem({text:'just do it'}));
         }
-    }
-    this.moving = true;
-    window.history.pushState(window.location.origin + '/' + listId + '#' + itemId);
-    this.history.push({
-        listId: listId,
-        itemId: itemId
+        itemId = itemId || fwdList.objectAt(0)._id;
+        window.history.pushState
+            (window.location.origin + '/' + listId + '#' + itemId);
+        self.history.push({
+            listId: listId,
+            itemId: itemId
+        });
+        self.refresh();
     });
-    this.moving = false;
-    this.refresh();
 };
 
 TodoApp.prototype.up = function () {
-    var state = this.history[this.history.length-1];
-    var listId = state.listId;
-    var list = this.host.get('/TodoList#'+listId);
-    var i = list.indexOf(state.itemId);
+    var list = this.getList();
+    var item = this.getItem();
+    var i = list.indexOf(item);
     if (i>0) {
         var newId = list.objectAt(i-1);
+        var state = this.history[this.history.length-1];
         state.itemId = newId._id;
         this.refresh();
     }
 };
 
 TodoApp.prototype.down = function () {
-    // may create entry
-    var state = this.history[this.history.length-1];
-    var listId = state.listId;
-    var list = this.host.get('/TodoList#'+listId);
-    var i = list.indexOf(state.itemId);
+    var list = this.getList();
+    var item = this.getItem();
+    var i = list.indexOf(item);
     if (i<list.length()-1) {
         var newId = list.objectAt(i+1);
+        var state = this.history[this.history.length-1];
         state.itemId = newId._id;
         this.refresh();
     }
 };
 
 TodoApp.prototype.toggle = function () {
-    var item = this.getActiveItem();
+    var item = this.getItem();
     if (item) {
         item.set({completed:!item.completed});
     }
 };
 
 TodoApp.prototype.create = function () {
-    var item = this.getActiveItem();
-    var state = this.history[this.history.length-1];
-    var listId = state.listId;
-    var list = this.host.get('/TodoList#'+listId);
+    var item = this.getItem();
+    var list = this.getList();
     if (list && item) {
         list.insertAfter(new TodoItem(), item);
+        // go new entry
+    }
+};
+
+TodoApp.prototype.delete = function (listId, itemId) {
+    var list = this.getList(listId);
+    var item = this.getItem(itemId);
+    if (list && item && list.indexOf(item)!==-1) {
+        list.remove(item);
     }
 };
 
@@ -192,6 +212,3 @@ var sessionId = window.localStorage.getItem('.localuser') ||
 window.localStorage.setItem('.localuser',sessionId);
 
 var app = window.app = new TodoApp(sessionId, 'tensymbols');
-
-
-

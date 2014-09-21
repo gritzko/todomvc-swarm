@@ -37,15 +37,6 @@ var TodoListView = React.createClass({
         modelType: "TodoList"
     },
 
-    // FIXME to the standard mixin!!!
-    componentDidMount: function () {
-        var self = this;
-        this.sync.onObjectEvent(function(){
-            self.forceUpdate();
-        });
-    },
-
-
     render: function() {
         var uistate = this.props.UIState;
         var classes = "todo-list";
