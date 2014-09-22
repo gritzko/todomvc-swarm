@@ -17,6 +17,14 @@
             Esc: back
         </span>
         <script src="./dist/LocalTodoApp.app.js"></script>
+        <script type="text/javascript" charset="utf-8">
+          (function(){
+              var sessionId = window.localStorage.getItem('.localuser') ||
+                  'anon'+Spec.int2base((Math.random()*10000)|0);
+              window.localStorage.setItem('.localuser',sessionId);
+              window.app = new window.TodoApp(sessionId, 'tensymbols');
+          })();
+        </script>
     </body>
     <!-- TODO 2-split, 3-split -->
 </html>
