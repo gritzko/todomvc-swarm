@@ -75,7 +75,7 @@ TodoApp.prototype.installListeners = function () {
             case 38: self.up();     break; // up arrow
             case 45: self.toggle(); break; // insert
             case 13: self.create(); break; // enter
-            case 46: self.delete(); break; // delete
+            //case 46: self.delete(); break; // delete
             default: return true;
         }
         ev.preventDefault();
@@ -182,11 +182,11 @@ TodoApp.prototype.selectItem = function (itemId) {
     var item = this.getItem();
     if (itemId.constructor===Number) {
         var i = itemId;
-        if (i>=0 && i<list.length()) { // TODO .length
-            itemId = list.objectAt(i)._id;
-        } else {
-            itemId = list.objectAt(0)._id;
-        }
+        if (i<0) { i=0; }
+        if (i>=list.length()) { i=list.length()-1; } // TODO .length
+        itemId = i>=0 ? list.objectAt(i)._id : '';
+    } if (itemId._id) {
+        itemId = itemId._id;
     }
     var state = this.history[this.history.length-1];
     state.itemId = itemId;
@@ -206,7 +206,7 @@ TodoApp.prototype.down = function () {
     var list = this.getList();
     var item = this.getItem();
     var i = list.indexOf(item);
-    if (i<list.length()) {
+    if (i+1<list.length()) {
         this.selectItem(i+1);
     }
 };
@@ -222,16 +222,19 @@ TodoApp.prototype.create = function () {
     var item = this.getItem();
     var list = this.getList();
     if (list && item) {
-        list.insertAfter(new TodoItem(), item);
-        // go new entry
+        var newItem = new TodoItem();
+        list.insertAfter(newItem, item);
+        this.selectItem(newItem);
     }
 };
 
 TodoApp.prototype.delete = function (listId, itemId) {
     var list = this.getList(listId);
     var item = this.getItem(itemId);
-    if (list && item && list.indexOf(item)!==-1) {
+    var pos = list.indexOf(item);
+    if (list && item && pos!==-1) {
         list.remove(item);
+        this.selectItem(pos);
     }
 };
 
