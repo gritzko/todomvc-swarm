@@ -8,16 +8,15 @@
     "react": "~0.11",
     "react-tools": "~0.11",
     "ws": "^0.4.31",
-    "swarm": "~0.3"
+    "nopt": "",
+    "pushserve": "",
+    "swarm": "git://github.com/gritzko/swarm"
   },
   "devDependencies": {
     "browserify": "~2.36.0",
     "envify": "~1.2.0",
     "reactify": "~0.4.0",
-    "statics": "~0.1.0",
-    "uglify-js": "~2.4.13",
-    "watchify": "~0.4.1",
-    "jest-cli": "~0.1.5"
+    "statics": "~0.1.0"
   },
   "scripts": {
     "start": "node server.js"
