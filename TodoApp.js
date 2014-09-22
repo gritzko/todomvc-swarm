@@ -39,7 +39,6 @@ function TodoApp (ssnid, listId) {
 
 TodoApp.prototype.initSwarm = function () {
     this.storage = new Swarm.SharedWebStorage();
-    this.storage.authoritative = true;
     this.wsServerUri = 'ws://'+window.location.host;
     this.host = Swarm.env.localhost =
         new Swarm.Host(this.ssnid,'',this.storage);
@@ -74,8 +73,9 @@ TodoApp.prototype.installListeners = function () {
             case 40: self.down();   break; // down arrow
             case 38: self.up();     break; // up arrow
             case 45: self.toggle(); break; // insert
+            case 107:                      // numpad plus
             case 13: self.create(); break; // enter
-            //case 46: self.delete(); break; // delete
+            case 109:self.delete(); break; // numpad minus
             default: return true;
         }
         ev.preventDefault();
@@ -140,11 +140,11 @@ TodoApp.prototype.go = function (listId, itemId) {
 };
 
 TodoApp.prototype.back = function () {
-    this.moving = true;
-    this.history.pop();
-    window.history.back();
-    this.moving = false;
-    this.refresh();
+    if (this.history.length>1) {
+        this.history.pop();
+        window.history.back();
+        this.refresh();
+    }
 };
 
 TodoApp.prototype.forward = function (listId, itemId) {
@@ -162,7 +162,7 @@ TodoApp.prototype.forward = function (listId, itemId) {
         fwdList = this.host.get('/TodoList#'+listId); // TODO fn+id sig
     }
     // we may need to fetch the data from the server so we use a callback, yes
-    fwdList.once('.init',function(){
+    fwdList.onObjectStateReady(function(){
         if (!fwdList.length()) {
             fwdList.addObject(new TodoItem({text:'just do it'}));
         }
@@ -173,7 +173,8 @@ TodoApp.prototype.forward = function (listId, itemId) {
             listId: listId,
             itemId: itemId
         });
-        self.refresh();
+            self.refresh();
+        // TODO max delay
     });
 };
 
@@ -222,7 +223,7 @@ TodoApp.prototype.create = function () {
     var item = this.getItem();
     var list = this.getList();
     if (list && item) {
-        var newItem = new TodoItem();
+        var newItem = new TodoItem({text:''});
         list.insertAfter(newItem, item);
         this.selectItem(newItem);
     }
@@ -239,7 +240,7 @@ TodoApp.prototype.delete = function (listId, itemId) {
 };
 
 var sessionId = window.localStorage.getItem('.localuser') ||
-    'anon'+Spec.int2base((Math.random()*10000)|0);
+    'anon'+Spec.int2base((Math.random()*30000)|0);
 window.localStorage.setItem('.localuser',sessionId);
 
 var app = window.app = new TodoApp(sessionId, 'tensymbols');

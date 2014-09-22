@@ -50,7 +50,6 @@ var TodoListView = React.createClass({
                     UIState={uistate}
                     />
                 <MainSection
-                    key={uistate.listId}
                     list={this.sync}
                     UIState={uistate}
                     app={this.props.app}
