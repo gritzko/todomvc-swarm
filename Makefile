@@ -10,19 +10,20 @@ jsx: $(VIEWS)
 dist: jsx $(TARGETS)
 
 dist/%.js: view/%.jsx
-	$(BIN)/jsx $< > .js && mv .js $@
+	@mkdir -p $(@D)
+	@$(BIN)/jsx $< > .js && mv .js $@
 
 dist/%.app.js: ./%.js
 	@mkdir -p $(@D)
-	$(BIN)/browserify $< -o $@
+	@$(BIN)/browserify $< -o $@
 
 prepare:
 	@if [ ! -e node_modules/ ]; then npm install; fi
 
 clean:
-	find . -name '*.app.js' | xargs rm ;
-	find . -name '*.min.js' | xargs rm ;
-	rm dist/*.js ;
+	@find . -name '*.app.js' | xargs rm
+	@find . -name '*.min.js' | xargs rm
+	@rm -rf dist
 
 todo:
 	@echo
