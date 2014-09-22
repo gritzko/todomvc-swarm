@@ -239,8 +239,7 @@ TodoApp.prototype.delete = function (listId, itemId) {
     }
 };
 
-var sessionId = window.localStorage.getItem('.localuser') ||
-    'anon'+Spec.int2base((Math.random()*30000)|0);
-window.localStorage.setItem('.localuser',sessionId);
+module.exports = window.TodoApp = TodoApp
 
-var app = window.app = new TodoApp(sessionId, 'tensymbols');
+
+

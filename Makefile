@@ -1,33 +1,36 @@
-BIN = ./node_modules/.bin/
+BIN         = ./node_modules/.bin
 JSX_SOURCES = $(wildcard view/*.jsx)
+TARGETS     = dist/TodoApp.app.js dist/LocalTodoApp.app.js
+VIEWS       = $(patsubst view/%.jsx,dist/%.js,$(JSX_SOURCES))
+
+all: dist todo
+
+jsx: $(VIEWS)
+
+dist: jsx $(TARGETS)
 
 dist/%.js: view/%.jsx
-	$(BIN)/jsx $< > .js && mv .js $@
+	@mkdir -p $(@D)
+	@$(BIN)/jsx $< > .js && mv .js $@
 
-VIEWS = $(patsubst view/%.jsx,dist/%.js,$(JSX_SOURCES))
+dist/%.app.js: ./%.js
+	@mkdir -p $(@D)
+	@$(BIN)/browserify $< -o $@
 
-jsx:: $(VIEWS)
-
-all:: prepare jsx dist todo
-
-dist: jsx
-	$(BIN)/browserify TodoApp.js -o dist/TodoApp.app.js
-
-prepare::
-	if [ ! -e dist/ ]; then mkdir dist; fi
-	npm install
+prepare:
+	@if [ ! -e node_modules/ ]; then npm install; fi
 
 clean:
-	find . -name '*.app.js' | xargs rm ;
-	find . -name '*.min.js' | xargs rm ;
-	rm dist/*.js ;
+	@find . -name '*.app.js' | xargs rm
+	@find . -name '*.min.js' | xargs rm
+	@rm -rf dist
 
-todo::
+todo:
 	@echo
 	@git grep -w --color -n 'TO\DO'
 	@echo
 
-lint::
+lint:
 	$(BIN)/jshint $(SOURCES)
 
 
