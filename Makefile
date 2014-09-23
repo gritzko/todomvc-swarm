@@ -21,8 +21,6 @@ prepare:
 	@if [ ! -e node_modules/ ]; then npm install; fi
 
 clean:
-	@find . -name '*.app.js' | xargs rm
-	@find . -name '*.min.js' | xargs rm
 	@rm -rf dist
 
 todo:
