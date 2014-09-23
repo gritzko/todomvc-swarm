@@ -23,7 +23,7 @@
 
 var React = require('react');
 var Swarm = require('swarm');
-var TodoListView = require('./TodoListView');
+var TodoListView = require('./TodoListView.jsx');
 
 
 var TodoAppView = React.createClass({

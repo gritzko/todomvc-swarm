@@ -4,13 +4,15 @@
   "description": "Example React+Swarm TodoMVC app.",
   "main": "js/app.js",
   "dependencies": {
+    "compression": "^1.1.0",
+    "connect-browserify": "~3.2.1",
     "express": "^4.6.1",
+    "express-react-views": "^0.5.0",
     "react": "~0.11",
+    "node-jsx": "^0.11.0",
     "react-tools": "~0.11",
     "ws": "^0.4.31",
-    "nopt": "",
-    "pushserve": "",
-    "swarm": "git://github.com/gritzko/swarm"
+    "swarm": "~0.3"
   },
   "devDependencies": {
     "browserify": "~2.36.0",

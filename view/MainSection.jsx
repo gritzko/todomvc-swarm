@@ -18,7 +18,7 @@
 
 var React = require('react');
 var Swarm = require('swarm');
-var TodoItemView = require('./TodoItemView');
+var TodoItemView = require('./TodoItemView.jsx');
 
 var MainSection = React.createClass({
 
