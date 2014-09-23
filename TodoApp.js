@@ -173,7 +173,7 @@ TodoApp.prototype.forward = function (listId, itemId) {
             listId: listId,
             itemId: itemId
         });
-            self.refresh();
+        self.refresh();
         // TODO max delay
     });
 };
@@ -191,6 +191,8 @@ TodoApp.prototype.selectItem = function (itemId) {
     }
     var state = this.history[this.history.length-1];
     state.itemId = itemId;
+    window.history.replaceState
+        ({},"",window.location.origin + '/' + list._id + '#' + itemId);
     this.refresh();
 };
 

@@ -2,7 +2,7 @@ var Swarm    = require('swarm');
 var Spec     = Swarm.Spec;
 var TodoList = require('./model/TodoList');
 var TodoItem = require('./model/TodoItem');
-var TodoApp  = require('./Todoapp');
+var TodoApp  = require('./TodoApp');
 
 module.exports = window.TodoApp = (function(superclass){
 
