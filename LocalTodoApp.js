@@ -25,6 +25,24 @@ module.exports = window.TodoApp = (function(superclass){
             new Swarm.Host(this.ssnid,'',this.storage);
     };
 
+    prototype.installListeners = function () {
+        var self = this;
+        document.addEventListener('keydown', function (ev) {
+            switch (ev.keyCode) {
+                // case 9:  self.forward();break; // tab
+                // case 27: self.back();   break; // esc
+                case 40: self.down();   break; // down arrow
+                case 38: self.up();     break; // up arrow
+                case 45: self.toggle(); break; // insert
+                case 13: self.create(); break; // enter
+                //case 46: self.delete(); break; // delete
+                default: return true;
+            }
+            ev.preventDefault();
+            return false;
+        });
+    };
+
     prototype.parseUri = function () {
         var hash = window.localStorage.getItem(".itemId");
         var path = window.localStorage.getItem(".listId");
