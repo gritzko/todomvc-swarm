@@ -161,8 +161,12 @@ TodoApp.prototype.forward = function (listId, itemId) {
     } else {
         fwdList = this.host.get('/TodoList#'+listId); // TODO fn+id sig
     }
+    var oldHash = window.location.hash;
     // we may need to fetch the data from the server so we use a callback, yes
     fwdList.onObjectStateReady(function(){
+        if (window.location.hash!=oldHash) {
+            return; // the user has likely navigated away while the data was loading
+        }
         if (!fwdList.length()) {
             fwdList.addObject(new TodoItem({text:'just do it'}));
         }

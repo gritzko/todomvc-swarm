@@ -89,8 +89,15 @@ var TodoItemView = React.createClass({
     },
 
     _onChange: function(event) {
-        var text = event.target.value;
+        var edit = event.target; 
+        var text = edit.value;
+        var pos = edit.selectionStart;
+        // save it, send it to everybody
         this.sync.set({text:text});
+        // a bit ugly, but React may wreck cursor pos
+        this.forceUpdate(function(){
+            edit.selectionStart = edit.selectionEnd = pos;
+        });
     },
 
     _onDestroyClick: function() {
