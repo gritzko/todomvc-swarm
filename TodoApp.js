@@ -16,8 +16,8 @@
  * @jsx React.DOM
  */
 
-var React         = require('react');
-var Swarm         = require('swarm');
+var React = require('react');
+var Swarm = require('swarm');
 var Spec = Swarm.Spec;
 
 var TodoList = require('./model/TodoList');
@@ -25,7 +25,7 @@ var TodoItem = require('./model/TodoItem');
 
 Swarm.env.debug = true;
 
-var TodoAppView       = require('./dist/TodoAppView');
+var TodoAppView = require('./view/TodoAppView.jsx');
 
 function TodoApp (ssnid, listId) {
     this.history = [];
@@ -62,7 +62,6 @@ TodoApp.prototype.parseUri = function () {
     }
     this.forward(listId,itemId);
 };
-
 
 TodoApp.prototype.installListeners = function () {
     var self = this;
@@ -245,7 +244,4 @@ TodoApp.prototype.delete = function (listId, itemId) {
     }
 };
 
-module.exports = window.TodoApp = TodoApp
-
-
-
+module.exports = window.TodoApp = TodoApp;

@@ -24,9 +24,9 @@
 var React = require('react');
 var Swarm = require('swarm');
 
-var Header = require('./Header');
-var MainSection = require('./MainSection');
-var Footer = require('./Footer');
+var Header = require('./Header.jsx');
+var MainSection = require('./MainSection.jsx');
+var Footer = require('./Footer.jsx');
 
 
 var TodoListView = React.createClass({
@@ -56,7 +56,8 @@ var TodoListView = React.createClass({
                     />
                 <Footer
                     list={this.sync}
-                    UIState={uistate} />
+                    UIState={uistate}
+                    />
             </div>
         );
     },
