@@ -14,7 +14,7 @@ module.exports = window.TodoApp = (function(superclass){
     var prototype = extend$((import$(S, superclass), S), superclass).prototype, constructor = S;
 
     function S(ssnid, itemId){
-        this.history = [];
+        this.path = [];
         this.ssnid = ssnid;
         this.moving = false;
 
@@ -93,7 +93,7 @@ module.exports = window.TodoApp = (function(superclass){
             itemId = itemId || fwdList.objectAt(0)._id;
             window.localStorage.setItem(".itemId", "#" + itemId);
             window.localStorage.setItem(".listId", "/" + listId);
-            self.history.push({
+            self.path.push({
                 listId: listId,
                 itemId: itemId
             });
