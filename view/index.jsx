@@ -4,7 +4,7 @@
 
 var React = require('react');
 var Swarm = require('swarm');
-var TodoAppView = require('./TodoAppView');
+var TodoAppView = require('./TodoAppView.jsx');
 
 var page = React.createClass({
 
