@@ -1,0 +1,75 @@
+/* ipad */
+@media (max-width: 570px) {
+  .help {
+    position: relative;
+  }
+  #todoapp {
+    width: 100%;
+    overflow: hidden;
+  }
+  .todo-list {
+    width: 95%;
+  }
+  .todo-list ul li .edit {
+    max-width: 86%;
+  }
+  /* .clear-completed{ */
+  /*   display: none; */
+  /* } */
+
+  .todo-list ul li input {
+    font-size: 12px!important;
+    position: relative;
+    top: -6px;
+  }
+  .todo-list ul li div {
+    height: 30px;
+  }
+
+  .todo-list ul li:before {
+    left: 30px;
+  }
+  .todo-list ul li .toggle{
+    width: 30px;
+    position: relative;
+    top: -6px;
+  }
+  .todo-list ul li .toggle:after {
+    font-size: 10px!important;
+  }
+  .footer {
+    font-size: 10px;
+    bottom: -19px;
+    height: 16px;
+  }
+
+  .todo-list ul li .destroy {
+    font-size: 13px;
+    right: -5px;
+  }
+  .clear-completed {
+    font-size: 9px;
+  }
+
+
+  .todo-list ul li {
+    height: 30px;
+  }
+}
+
+/* iphone */
+@media (max-width: 210px) {
+  .help {
+    position: relative;
+  }
+  #todoapp {
+    width: 100%;
+    overflow: hidden;
+  }
+  .todo-list {
+    width: 190px;
+  }
+  .todo-list ul li .edit {
+    max-width: 120px;
+  }
+}
