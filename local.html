@@ -5,6 +5,7 @@
 		<title>Swarm+React • TodoMVC</title>
 		<link rel="stylesheet" href="css/base.css">
 		<link rel="stylesheet" href="css/add.css">
+		<link rel="stylesheet" href="css/local.css">
     </head>
     <body>
         <div id='todoapp'>
@@ -20,7 +21,7 @@
         <script type="text/javascript" charset="utf-8">
           (function(){
               var sessionId = window.localStorage.getItem('.localuser') ||
-                  'anon'+Spec.int2base((Math.random()*10000)|0);
+                  'anon'+Swarm.Spec.int2base((Math.random()*10000)|0);
               window.localStorage.setItem('.localuser',sessionId);
               window.app = new window.TodoApp(sessionId, 'tensymbols');
           })();

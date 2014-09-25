@@ -30,11 +30,11 @@
 }
 
 .todo-list {
-    display: inline-block;
-    vertical-align: top;
-    margin: 10px;
-    background: #f8f8f2;
-    position: relative;
+  display: inline-block;
+  vertical-align: top;
+  margin: 10px;
+  background: #f8f8f2;
+  position: relative;
 	width: 550px;
 
 	margin: 60px 10px 40px 10px;

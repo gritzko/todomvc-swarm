@@ -5,6 +5,11 @@ var TodoItem = require('./model/TodoItem');
 var TodoApp  = require('./TodoApp');
 
 module.exports = window.TodoApp = (function(superclass){
+    var defaultModels = [];
+    // TODO: default english version
+    defaultModels.push({text:'распределенное приложение как локальное', completed: location.hash !== "#focused"});
+    defaultModels.push({text:'всё очень быстро', completed: true});
+    defaultModels.push({text:'теперь доступно каждому!', completed: true});
 
     var prototype = extend$((import$(S, superclass), S), superclass).prototype, constructor = S;
 
@@ -16,6 +21,9 @@ module.exports = window.TodoApp = (function(superclass){
         this.initSwarm();
         this.installListeners();
         this.parseUri();
+        if (location.hash === '#focused') {
+          this.selectItem(0);
+        }
     }
 
     prototype.initSwarm = function () {
@@ -23,6 +31,24 @@ module.exports = window.TodoApp = (function(superclass){
         this.storage.authoritative = true;
         this.host = Swarm.env.localhost =
             new Swarm.Host(this.ssnid,'',this.storage);
+    };
+
+    prototype.installListeners = function () {
+        var self = this;
+        document.addEventListener('keydown', function (ev) {
+            switch (ev.keyCode) {
+                // case 9:  self.forward();break; // tab
+                // case 27: self.back();   break; // esc
+                case 40: self.down();   break; // down arrow
+                case 38: self.up();     break; // up arrow
+                case 45: self.toggle(); break; // insert
+                case 13: self.create(); break; // enter
+                //case 46: self.delete(); break; // delete
+                default: return true;
+            }
+            ev.preventDefault();
+            return false;
+        });
     };
 
     prototype.parseUri = function () {
@@ -60,7 +86,9 @@ module.exports = window.TodoApp = (function(superclass){
         // we may need to fetch the data from the server so we use a callback, yes
         fwdList.once('.init',function(){
             if (!fwdList.length()) {
-                fwdList.addObject(new TodoItem({text:'just do it'}));
+                defaultModels.forEach(function(i){
+                    fwdList.addObject(new TodoItem(i));
+                })
             }
             itemId = itemId || fwdList.objectAt(0)._id;
             window.localStorage.setItem(".itemId", "#" + itemId);
