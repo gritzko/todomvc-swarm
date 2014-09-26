@@ -1,4 +1,4 @@
-/* ipad */
+/* ipad + iphone */
 @media (max-width: 570px) {
   .help {
     position: relative;
@@ -8,7 +8,7 @@
     overflow: hidden;
   }
   .todo-list {
-    width: 95%;
+    width: 95%!important;
   }
   .todo-list ul li .edit {
     max-width: 86%;
@@ -50,8 +50,9 @@
   .clear-completed {
     font-size: 9px;
   }
-
-
+  .todo-list ul li.completed .edit {
+    color: #444;
+  }
   .todo-list ul li {
     height: 30px;
   }
@@ -67,9 +68,21 @@
     overflow: hidden;
   }
   .todo-list {
-    width: 190px;
+    width: 190px!important;
   }
   .todo-list ul li .edit {
-    max-width: 120px;
+    max-width: 120px!important;
   }
 }
+.help {display: none;}
+
+/* ipad only */
+@media (max-width: 570px) and (min-width: 211px){
+  .todo-list {
+    display: block;
+    margin: 60px auto 40px auto;
+    width: 300px!important;
+  }
+}
+    /* margin: 60px auto 40px auto; */
+    /* display:block!imprtant; */

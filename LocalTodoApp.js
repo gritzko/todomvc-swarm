@@ -7,9 +7,14 @@ var TodoApp  = require('./Todoapp');
 module.exports = window.TodoApp = (function(superclass){
     var defaultModels = [];
     // TODO: default english version
-    defaultModels.push({text:'распределенное приложение как локальное', completed: location.hash !== "#focused"});
-    defaultModels.push({text:'всё очень быстро', completed: true});
-    defaultModels.push({text:'теперь доступно каждому!', completed: true});
+    defaultModels.push({text:'синхронизация,', completed: true});
+    defaultModels.push({text:'реальное время,', completed: true});
+    defaultModels.push({text:'совместная работа,', completed: true});
+    defaultModels.push({text:'работа в оффлайне,', completed: true});
+    defaultModels.push({text:'мгновенная загрузка,', completed: true});
+    defaultModels.push({text:'тотальный кэш всего,', completed: true});
+    defaultModels.push({text:'идеальный MVC...', completed: true});
+    defaultModels.push({text:'... в вашем приложении!', completed: false});
 
     var prototype = extend$((import$(S, superclass), S), superclass).prototype, constructor = S;
 
@@ -22,7 +27,7 @@ module.exports = window.TodoApp = (function(superclass){
         this.installListeners();
         this.parseUri();
         if (location.hash === '#focused') {
-          this.selectItem(0);
+          this.selectItem(7);
         }
     }
 
