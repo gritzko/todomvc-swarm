@@ -13,7 +13,7 @@ var page = React.createClass({
         return (
             <html>
                 <head>
-                    <meta charset="utf-8" />
+                    <meta charSet="utf-8" />
                     <title>Swarm+React • TodoMVC</title>
                     <link rel="stylesheet" href="/css/base.css" />
                     <link rel="stylesheet" href="/css/add.css" />
@@ -24,12 +24,13 @@ var page = React.createClass({
                             name="TodoApp"
                             UIState={this.props.UIState}/>
                     </div>
-                    <span class='help'>
+                    <span className='help'>
                         Up/Down: change item,
-                        Left/Right: change list,
-                        Space: toggle item,
-                        Enter: new item,
-                        Esc: back
+                        Tab: child list,
+                        Esc: parent list,
+                        Insert: toggle item,
+                        Enter/Numpad plus: new item,
+                        Numpad minus: delete item
                     </span>
                     <script src="/js/bundle.js"></script>
                     <script dangerouslySetInnerHTML={{__html: this.props.runAppJS}} />
