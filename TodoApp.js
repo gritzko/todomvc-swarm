@@ -191,7 +191,7 @@ TodoApp.prototype.forward = function (listId, itemIds) {
         if (!fwdList.length()) {
             fwdList.addObject(new TodoItem({text:'just do it'}));
         }
-        if (!itemIds) {
+        if (!itemIds || !itemIds.length) {
             itemIds = [fwdList.objectAt(0)._id];
         } else if ('string' === typeof itemIds) {
             itemIds = [itemIds];
