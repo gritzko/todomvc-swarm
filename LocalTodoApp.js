@@ -7,14 +7,26 @@ var TodoApp  = require('./Todoapp');
 module.exports = window.TodoApp = (function(superclass){
     var defaultModels = [];
     // TODO: default english version
-    defaultModels.push({text:'синхронизация,', completed: true});
-    defaultModels.push({text:'реальное время,', completed: true});
-    defaultModels.push({text:'совместная работа,', completed: true});
-    defaultModels.push({text:'работа в оффлайне,', completed: true});
-    defaultModels.push({text:'мгновенная загрузка,', completed: true});
-    defaultModels.push({text:'тотальный кэш всего,', completed: true});
-    defaultModels.push({text:'идеальный MVC...', completed: true});
-    defaultModels.push({text:'... в вашем приложении!', completed: false});
+    if (location.search==="?ru") {
+        defaultModels.push({text:'синхронизация,', completed: true});
+        defaultModels.push({text:'реальное время,', completed: true});
+        defaultModels.push({text:'совместная работа,', completed: true});
+        defaultModels.push({text:'работа в оффлайне,', completed: true});
+        defaultModels.push({text:'мгновенная загрузка,', completed: true});
+        defaultModels.push({text:'тотальный кэш всего,', completed: true});
+        defaultModels.push({text:'идеальный MVC...', completed: true});
+        defaultModels.push({text:'... в вашем приложении!', completed: false});
+    } else {
+        defaultModels.push({text:'syncranization,', completed: true});
+        defaultModels.push({text:'real-time,', completed: true});
+        defaultModels.push({text:'collaboration,', completed: true});
+        defaultModels.push({text:'offline work,', completed: true});
+        defaultModels.push({text:'instant page load,', completed: true});
+        defaultModels.push({text:'total caching,', completed: true});
+        defaultModels.push({text:'neat MVC ...', completed: true});
+        defaultModels.push({text:'... in your app!', completed: false});
+
+  }
 
     var prototype = extend$((import$(S, superclass), S), superclass).prototype, constructor = S;
 
