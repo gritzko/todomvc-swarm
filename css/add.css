@@ -112,6 +112,14 @@ span.bookmark {
     text-align: right;
 }
 
+.todo-list ul li.selected span.bookmark {
+    width: 50px;
+}
+
+.todo-list.top ul li.selected span.bookmark {
+    width: 40px;
+}
+
 span.help {
     position: absolute;
     bottom: 0;
