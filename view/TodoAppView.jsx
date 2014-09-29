@@ -28,6 +28,28 @@ var TodoListView = require('./TodoListView.jsx');
 
 var TodoAppView = React.createClass({
 
+    getInitialState: function () {
+        return {
+            scrollInited: false
+        };
+    },
+
+    componentWillUpdate: function () {
+        var node = this.getDOMNode();
+        this.shouldScroll = node.scrollLeft + node.offsetWidth === node.scrollWidth;
+    },
+
+    componentDidUpdate: function (prevProps, prevState) {
+        if (this.shouldScroll || !prevState.scrollInited) {
+            var node = this.getDOMNode();
+            node.scrollLeft = node.scrollWidth;
+        }
+    },
+
+    componentDidMount: function () {
+        this.setState({scrollInited: true});
+    },
+
     render: function() {
 
         var todoLists = [];
