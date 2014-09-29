@@ -156,6 +156,8 @@ TodoApp.prototype.go = function (listId, itemId) {
 };
 
 TodoApp.prototype.back = function (steps) {
+    if (this.path.length <= 1) return;
+
     for (var i = 0; i < steps && i < this.path.length; i++) {
         this.path.pop();
     }
