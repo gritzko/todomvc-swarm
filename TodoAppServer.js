@@ -147,3 +147,19 @@ wsServer.on('connection', function (ws) {
     console.log('incomingWS %s', params.path);
     app.swarmHost.accept(new EinarosWSStream(ws), { delay: 50 });
 });
+
+process.on('SIGTERM', onExit);
+process.on('SIGINT', onExit);
+process.on('SIGQUIT', onExit);
+
+function onExit(exitCode) {
+    console.log('shutting down http-server...');
+    httpServer.close();
+
+    console.log('closing swarm host...');
+    app.swarmHost.close(function () {
+        console.log('swarm host closed');
+        process.exit(exitCode);
+    });
+}
+

@@ -30,7 +30,7 @@ var TodoAppView = require('./view/TodoAppView.jsx');
 function TodoApp (ssnid, listId) {
     this.path = [];
     this.ssnid = ssnid;
-    this.moving = false;
+    this.loading = true;
 
     this.initSwarm();
     this.installListeners();
@@ -72,9 +72,11 @@ TodoApp.prototype.parseUri = function () {
 TodoApp.prototype.installListeners = function () {
     var self = this;
     document.addEventListener('keydown', function (ev) {
+        if (self.loading) return;
+
         switch (ev.keyCode) {
             case 9:  self.forward();break; // tab
-            case 27: self.back();   break; // esc
+            case 27: self.back(1);  break; // esc
             case 40: self.down();   break; // down arrow
             case 38: self.up();     break; // up arrow
             case 45: self.toggle(); break; // insert
@@ -134,39 +136,35 @@ TodoApp.prototype.refresh = function () {
         // TODO scroll into view
     }
     // set URI
+    var locationPath = this.buildLocationPath();
+    window.history.replaceState({},"",window.location.origin + locationPath);
 };
 
 // Suddenly jump to some entry in some list.
 // Invoked by onClick and onHashChange
 TodoApp.prototype.go = function (listId, itemId) {
+    if (this.loading) return;
+
     // find in history
-    var hi = this.path;
-    var back=0;
-    while (back<hi.length && hi[hi.length-back-1].listId!==listId) {
-        back++;
+    var path = this.path;
+    var backSteps = 0;
+    while (backSteps < path.length && path[path.length-backSteps-1].listId !== listId) {
+        backSteps++;
     }
-    while (back--) {
-        this.back();
-    }
-    if (back===hi.length) {
-        this.forward(listId,[itemId]);
-    }
-    var list = this.getList();
-    if ( itemId && list) { //} && list.indexOf('/TodoItem#'+itemId)!==-1 ) {
-        this.selectItem(itemId);
-    }
+    this.back(backSteps);
+    this.selectItem(itemId);
 };
 
-TodoApp.prototype.back = function () {
-    if (this.path.length>1) {
+TodoApp.prototype.back = function (steps) {
+    if (this.path.length <= 1) return;
+
+    for (var i = 0; i < steps && i < this.path.length; i++) {
         this.path.pop();
-        window.history.back();
-        this.refresh();
     }
+    this.refresh();
 };
 
 TodoApp.prototype.forward = function (listId, itemIds) {
-    console.log('forward(', listId, itemIds, ')');
     var self = this;
     var fwdList;
     if (!listId) {
@@ -181,6 +179,7 @@ TodoApp.prototype.forward = function (listId, itemIds) {
         fwdList = this.host.get('/TodoList#'+listId); // TODO fn+id sig
     }
     var oldPath = window.location.pathname + window.location.hash;
+    this.loading = true;
     // we may need to fetch the data from the server so we use a callback, yes
     fwdList.onObjectStateReady(function () {
         if (window.location.pathname + window.location.hash != oldPath) {
@@ -192,7 +191,7 @@ TodoApp.prototype.forward = function (listId, itemIds) {
         if (!fwdList.length()) {
             fwdList.addObject(new TodoItem({text:'just do it'}));
         }
-        if (!itemIds) {
+        if (!itemIds || !itemIds.length) {
             itemIds = [fwdList.objectAt(0)._id];
         } else if ('string' === typeof itemIds) {
             itemIds = [itemIds];
@@ -208,13 +207,15 @@ TodoApp.prototype.forward = function (listId, itemIds) {
             self.forward(item.childList, itemIds);
             return;
         }
-        window.history.pushState({},"",window.location.origin + self.buildLocationPath());
+        self.loading = false;
         self.refresh();
         // TODO max delay
     });
 };
 
 TodoApp.prototype.selectItem = function (itemId) {
+    if (this.loading) return;
+
     var list = this.getList();
     if (itemId.constructor===Number) {
         var i = itemId;
@@ -226,11 +227,12 @@ TodoApp.prototype.selectItem = function (itemId) {
     }
     var state = this.path[this.path.length-1];
     state.itemId = itemId;
-    window.history.replaceState({},"",window.location.origin + this.buildLocationPath());
     this.refresh();
 };
 
 TodoApp.prototype.up = function () {
+    if (this.loading) return;
+
     var list = this.getList();
     var item = this.getItem();
     var i = list.indexOf(item);
@@ -240,6 +242,8 @@ TodoApp.prototype.up = function () {
 };
 
 TodoApp.prototype.down = function () {
+    if (this.loading) return;
+
     var list = this.getList();
     var item = this.getItem();
     var i = list.indexOf(item);
@@ -249,6 +253,8 @@ TodoApp.prototype.down = function () {
 };
 
 TodoApp.prototype.toggle = function () {
+    if (this.loading) return;
+
     var item = this.getItem();
     if (item) {
         item.set({completed:!item.completed});
@@ -256,6 +262,8 @@ TodoApp.prototype.toggle = function () {
 };
 
 TodoApp.prototype.create = function () {
+    if (this.loading) return;
+
     var item = this.getItem();
     var list = this.getList();
     if (list && item) {
@@ -266,6 +274,8 @@ TodoApp.prototype.create = function () {
 };
 
 TodoApp.prototype.delete = function (listId, itemId) {
+    if (this.loading) return;
+
     var list = this.getList(listId);
     var item = this.getItem(itemId);
     var pos = list.indexOf(item);

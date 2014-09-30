@@ -21,12 +21,23 @@
  * Therefore this needs to be displayed normally by default.
  */
 
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
 #todoapp {
+    width: 100%;
+    height: 100%;
 }
 
 .todopane {
     white-space: nowrap;
     margin: auto;
+    overflow: scroll;
+    width: 100%;
+    height: 100%;
 }
 
 .todo-list {
@@ -96,9 +107,17 @@ span.bookmark {
     color: #888;
     padding: 4px;
     white-space: pre;
-    width: 50px;
+    width: 40px;
     display: inline-block;
     text-align: right;
+}
+
+.todo-list ul li.selected span.bookmark {
+    width: 50px;
+}
+
+.todo-list.top ul li.selected span.bookmark {
+    width: 40px;
 }
 
 span.help {
