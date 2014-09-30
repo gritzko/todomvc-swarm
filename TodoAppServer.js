@@ -25,6 +25,7 @@ var EinarosWSStream = Swarm.EinarosWSStream;
 var TodoList = require('./model/TodoList');
 var TodoItem = require('./model/TodoItem');
 
+Swarm.env.debug = true;
 
 var port = 8000;
 
@@ -33,7 +34,7 @@ app.use(compression());
 app.use(express.static('.'));
 app.use('/js/bundle.js', browserify({
     entry: './TodoApp.js',
-    debug: true
+    debug: false
 }));
 
 // configure view rendering engine
