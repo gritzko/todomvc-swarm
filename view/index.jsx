@@ -31,6 +31,7 @@ var page = React.createClass({
                         Enter/Numpad plus: new item,
                         Numpad minus: delete item
                     </span>
+                    <script src="http://fb.me/react-0.11.2.min.js"></script>
                     <script src="/js/bundle.js"></script>
                     <script src="/fake_auth_init.js"></script>
                 </body>
