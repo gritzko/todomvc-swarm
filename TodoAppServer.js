@@ -65,7 +65,6 @@ app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
 
     if (!rootListId) {
         res.render('index', {
-            runAppJS: runAppJS,
             app: {path: []}
         });
         return;
