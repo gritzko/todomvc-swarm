@@ -9,7 +9,6 @@ var TodoAppView = require('./TodoAppView.jsx');
 var page = React.createClass({
 
     render: function() {
-
         return (
             <html>
                 <head>
@@ -22,7 +21,7 @@ var page = React.createClass({
                     <div id='todoapp'>
                         <TodoAppView
                             name="TodoApp"
-                            UIState={this.props.UIState}/>
+                            app={this.props.app}/>
                     </div>
                     <span className='help'>
                         Up/Down: change item,

@@ -47,7 +47,7 @@ app.engine('jsx', jsx_views.createEngine(jsx_options));
 app.set('view engine', 'jsx');
 app.set('views', process.cwd() + '/view');
 
-var runAppJS = '(function(){\n'+
+var runAppJS = '(function(){\n'+ // FIXME smell
     'var sessionId = window.localStorage.getItem(\'.localuser\') ||\n' +
     '\'anon\'+Swarm.Spec.int2base((Math.random()*10000)|0);\n' +
     'window.localStorage.setItem(\'.localuser\',sessionId);\n' +
@@ -72,9 +72,8 @@ app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
 
     if (!rootListId) {
         res.render('index', {
-            key: 'root',
             runAppJS: runAppJS,
-            UIState: []
+            app: {path: []}
         });
         return;
     }
@@ -100,11 +99,10 @@ app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
             });
             var item = list.getObject(itemId);
             if (!itemIds.length || !item.childList) {
-                console.log('final path: %j', path);
                 res.header('Location', '/' + rootListId + '/' + path.map(function (el) {return el.itemId;}).join('/'));
                 res.render('index', {
                     runAppJS: runAppJS,
-                    UIState: path
+                    app: {path: path}
                 });
             } else {
                 loadPath(path, item.childList, itemIds);
@@ -162,4 +160,3 @@ function onExit(exitCode) {
         process.exit(exitCode);
     });
 }
-

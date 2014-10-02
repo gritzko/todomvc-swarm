@@ -89,7 +89,7 @@ var TodoItemView = React.createClass({
     },
 
     _onChange: function(event) {
-        var edit = event.target; 
+        var edit = event.target;
         var text = edit.value;
         var pos = edit.selectionStart;
         // save it, send it to everybody

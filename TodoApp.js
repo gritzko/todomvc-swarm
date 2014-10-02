@@ -29,11 +29,10 @@ var TodoAppView = require('./view/TodoAppView.jsx');
 
 function TodoApp (ssnid, listId) {
     this.path = [];
+    this.active = false;
     this.ssnid = ssnid;
-    this.loading = true;
 
     this.initSwarm();
-    this.installListeners();
     this.parseUri();
 }
 
@@ -72,8 +71,6 @@ TodoApp.prototype.parseUri = function () {
 TodoApp.prototype.installListeners = function () {
     var self = this;
     document.addEventListener('keydown', function (ev) {
-        if (self.loading) return;
-
         switch (ev.keyCode) {
             case 9:  self.forward();break; // tab
             case 27: self.back(1);  break; // esc
@@ -88,6 +85,7 @@ TodoApp.prototype.installListeners = function () {
         ev.preventDefault();
         return false;
     });
+    this.listening = true;
 };
 
 TodoApp.prototype.getItem = function (itemId) {
@@ -119,12 +117,12 @@ TodoApp.prototype.buildLocationPath = function () {
 };
 
 TodoApp.prototype.refresh = function () {
+    var self = this;
     // rerender DOM
     React.renderComponent(
         TodoAppView ({
-            key: 'root',
-            app: this,
-            UIState: this.path
+            key: 'TodoApp',
+            app: self
         }),
         document.getElementById('todoapp')
     );
@@ -143,8 +141,6 @@ TodoApp.prototype.refresh = function () {
 // Suddenly jump to some entry in some list.
 // Invoked by onClick and onHashChange
 TodoApp.prototype.go = function (listId, itemId) {
-    if (this.loading) return;
-
     // find in history
     var path = this.path;
     var backSteps = 0;
@@ -164,58 +160,65 @@ TodoApp.prototype.back = function (steps) {
     this.refresh();
 };
 
+/** Go deeper into child lists (may create them if necessary).
+ * itemIds  must be an id (selected entry) or an Array of ids
+ *          (chain of selections) or falsy (1st item on the list)
+ * */
 TodoApp.prototype.forward = function (listId, itemIds) {
     var self = this;
     var fwdList;
-    if (!listId) {
+    if (!listId) { // default Tab behavior
         var item = this.getItem();
         listId = item.childList;
     }
-    if (!listId) {
+    if (!listId) { // create a new list if none exists
         fwdList = new TodoList();
         listId = fwdList._id;
         item.set({childList: listId});
-    } else {
+    } else { // or fetch an existing one
         fwdList = this.host.get('/TodoList#'+listId); // TODO fn+id sig
     }
+    if (!itemIds) { // normalize 2nd argument
+        itemIds = [undefined];
+    } else if (itemIds.constructor===String) {
+        itemIds = [itemIds];
+    } else if (itemIds.constructor!==Array) {
+        throw new Error('incorrect argument');
+    }
     var oldPath = window.location.pathname + window.location.hash;
-    this.loading = true;
     // we may need to fetch the data from the server so we use a callback, yes
     fwdList.onObjectStateReady(function () {
         if (window.location.pathname + window.location.hash != oldPath) {
-            console.log('route changed');
-            self.path = [];
-            self.parseUri();
             return; // the user has likely navigated away while the data was loading
         }
         if (!fwdList.length()) {
-            fwdList.addObject(new TodoItem({text:'just do it'}));
-        }
-        if (!itemIds || !itemIds.length) {
-            itemIds = [fwdList.objectAt(0)._id];
-        } else if ('string' === typeof itemIds) {
-            itemIds = [itemIds];
+            fwdList.addObject(new TodoItem({text:'just do it'})); // FIXME move to TodoList
         }
 
         var itemId = itemIds.shift();
+        if (!itemId) { // take the 1st
+            itemId = fwdList.objectAt(0)._id;
+        }
+
         self.path.push({
             listId: listId,
             itemId: itemId
         });
-        if (itemIds.length) {
+        if (itemIds.length) { // go deeper into sub-lists
             item = fwdList.getObject(itemId);
             self.forward(item.childList, itemIds);
-            return;
+        } else { // the data is loaded for the entire requested path
+            if (!self.active) {
+               self.installListeners();
+               self.active = true;
+            }
+            self.refresh();
         }
-        self.loading = false;
-        self.refresh();
         // TODO max delay
     });
 };
 
 TodoApp.prototype.selectItem = function (itemId) {
-    if (this.loading) return;
-
     var list = this.getList();
     if (itemId.constructor===Number) {
         var i = itemId;
@@ -231,8 +234,6 @@ TodoApp.prototype.selectItem = function (itemId) {
 };
 
 TodoApp.prototype.up = function () {
-    if (this.loading) return;
-
     var list = this.getList();
     var item = this.getItem();
     var i = list.indexOf(item);
@@ -242,8 +243,6 @@ TodoApp.prototype.up = function () {
 };
 
 TodoApp.prototype.down = function () {
-    if (this.loading) return;
-
     var list = this.getList();
     var item = this.getItem();
     var i = list.indexOf(item);
@@ -253,8 +252,6 @@ TodoApp.prototype.down = function () {
 };
 
 TodoApp.prototype.toggle = function () {
-    if (this.loading) return;
-
     var item = this.getItem();
     if (item) {
         item.set({completed:!item.completed});
@@ -262,8 +259,6 @@ TodoApp.prototype.toggle = function () {
 };
 
 TodoApp.prototype.create = function () {
-    if (this.loading) return;
-
     var item = this.getItem();
     var list = this.getList();
     if (list && item) {
@@ -274,8 +269,6 @@ TodoApp.prototype.create = function () {
 };
 
 TodoApp.prototype.delete = function (listId, itemId) {
-    if (this.loading) return;
-
     var list = this.getList(listId);
     var item = this.getItem(itemId);
     var pos = list.indexOf(item);

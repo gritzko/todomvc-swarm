@@ -39,6 +39,7 @@ var TodoListView = React.createClass({
 
     render: function() {
         var uistate = this.props.UIState;
+        var app = this.props.app;
         var classes = "todo-list";
         if (this.props.depth===0) {
             classes += ' top';
@@ -52,7 +53,7 @@ var TodoListView = React.createClass({
                 <MainSection
                     list={this.sync}
                     UIState={uistate}
-                    app={this.props.app}
+                    app={app}
                     />
                 <Footer
                     list={this.sync}

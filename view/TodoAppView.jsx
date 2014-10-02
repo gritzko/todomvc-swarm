@@ -53,15 +53,14 @@ var TodoAppView = React.createClass({
     render: function() {
 
         var todoLists = [];
-        var history = this.props.UIState;
-        for(var i=0; i<history.length; i++) {
-            var list = history[i];
+        var path = this.props.app.path;
+        for(var i=0; i<path.length; i++) {
+            var uistate = path[i];
             todoLists.push(
                 <TodoListView
-                    key={list.listId}
-                    depth={history.length-i-1}
+                    key={uistate.listId}
+                    UIState={uistate}
                     app={this.props.app}
-                    UIState={list}
                 />
             );
         }

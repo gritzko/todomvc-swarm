@@ -229,6 +229,7 @@ label[for='toggle-all'] {
 	-webkit-transform: scale(1.3);
 	-ms-transform: scale(1.3);
 	transform: scale(1.3);
+    color: #900;
 }
 
 .todo-list ul li .destroy:after {

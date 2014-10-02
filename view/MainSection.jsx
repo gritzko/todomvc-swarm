@@ -43,12 +43,10 @@ var MainSection = React.createClass({
                     key={spec.id()}
                     UIState={this.props.UIState}
                     app={this.props.app}
-                    tabindex={i}
+                    tabIndex={i}
                 />
             );
         }
-
-        console.log('focused: ',this.props.focused);
 
         return (
             <section className="main_section">
