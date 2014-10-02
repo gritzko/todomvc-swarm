@@ -72,7 +72,7 @@ TodoApp.prototype.installListeners = function () {
     var self = this;
     document.addEventListener('keydown', function (ev) {
         switch (ev.keyCode) {
-            case 9:  self.forward();break; // tab
+            case 9:  ev.shiftKey ? self.back(1) : self.forward(); break; // [shift+]tab
             case 27: self.back(1);  break; // esc
             case 40: self.down();   break; // down arrow
             case 38: self.up();     break; // up arrow
