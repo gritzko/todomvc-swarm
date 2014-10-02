@@ -47,13 +47,6 @@ app.engine('jsx', jsx_views.createEngine(jsx_options));
 app.set('view engine', 'jsx');
 app.set('views', process.cwd() + '/view');
 
-var runAppJS = '(function(){\n'+ // FIXME smell
-    'var sessionId = window.localStorage.getItem(\'.localuser\') ||\n' +
-    '\'anon\'+Swarm.Spec.int2base((Math.random()*10000)|0);\n' +
-    'window.localStorage.setItem(\'.localuser\',sessionId);\n' +
-    'window.app = new window.TodoApp(sessionId);\n' +
-    '}());';
-
 app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
     Spec.reQTokExt.lastIndex = 0;
     var path = req.path;
@@ -101,7 +94,6 @@ app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
             if (!itemIds.length || !item.childList) {
                 res.header('Location', '/' + rootListId + '/' + path.map(function (el) {return el.itemId;}).join('/'));
                 res.render('index', {
-                    runAppJS: runAppJS,
                     app: {path: path}
                 });
             } else {

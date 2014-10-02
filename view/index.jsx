@@ -32,7 +32,7 @@ var page = React.createClass({
                         Numpad minus: delete item
                     </span>
                     <script src="/js/bundle.js"></script>
-                    <script dangerouslySetInnerHTML={{__html: this.props.runAppJS}} />
+                    <script src="/fake_auth_init.js"></script>
                 </body>
             </html>
         );
