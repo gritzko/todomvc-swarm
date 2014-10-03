@@ -8,13 +8,18 @@ var http = require('http');
 var ws_lib = require('ws');
 // Express
 var express = require('express');
-var browserify = require('connect-browserify');
+var browserify = require('browserify-middleware');
 var compression = require('compression');
-var jsx_views = require('express-react-views');
+//var jsx_views = require('express-react-views');
+var lodash_views = require('lodash-express');
 
-// React jsx support
+// React
+// jsx support
 var nodejsx = require('node-jsx');
 nodejsx.install();
+
+var React = require('react');
+var TodoAppView = require('./view/TodoAppView.jsx');
 
 // Swarm
 var Swarm = require('swarm');
@@ -34,20 +39,22 @@ var port = 8000;
 var app = express();
 app.use(compression());
 app.use(express.static('.'));
-app.use('/js/bundle.js', browserify({
-    entry: './TodoApp.js',
-    debug: false
-}));
+
+var react_shared = ['react'];
+app.use('/js/react.js', browserify(react_shared));
+app.use('/js/bundle.js', browserify('./TodoApp.js', {external: react_shared}));
 
 // configure view rendering engine
-var jsx_options = {
-    jsx: {
-        harmony: false
-    }
-};
-app.engine('jsx', jsx_views.createEngine(jsx_options));
-app.set('view engine', 'jsx');
+lodash_views(app, 'lodash.html');
+app.set('view engine', 'lodash.html');
 app.set('views', process.cwd() + '/view');
+
+// empty page for offline support
+app.get('/offline.html', function (req, res) {
+    res.render('index', {
+        appView: ''
+    });
+});
 
 app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
     var route = req.path;
@@ -55,7 +62,10 @@ app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
         // real route may differ (for ex: when now object with specified id found)
         res.header('Location', todoRouter.buildRoute(path));
         res.render('index', {
-            app: {path: path}
+            appView: React.renderComponentToString(TodoAppView({
+                key: 'TodoApp',
+                app: {path: path}
+            }))
         });
     });
 });
