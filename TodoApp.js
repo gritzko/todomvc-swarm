@@ -20,6 +20,8 @@ var React = require('react');
 var Swarm = require('swarm');
 var Spec = Swarm.Spec;
 
+var todoRouter = require('./todoRouter');
+
 var TodoList = require('./model/TodoList');
 var TodoItem = require('./model/TodoItem');
 
@@ -32,6 +34,7 @@ function TodoApp (ssnid, listId) {
     this.active = false;
     this.ssnid = ssnid;
 
+    this.refreshBound = this.refresh.bind(this);
     this.initSwarm();
     this.parseUri();
 }
@@ -45,27 +48,8 @@ TodoApp.prototype.initSwarm = function () {
 };
 
 TodoApp.prototype.parseUri = function () {
-    var path = window.location.pathname + window.location.hash;
-    var rootListId = null;
-    var itemIds = [];
-    var m;
-    Spec.reQTokExt.lastIndex = 0;
-    while (m = Spec.reQTokExt.exec(path)) {
-        var id = m && m[2];
-        if (!rootListId) {
-            rootListId = id;
-        } else {
-            itemIds.push(id);
-        }
-    }
-    if (!rootListId) {
-        var list = new TodoList();
-        var item = new TodoItem();
-        list.addObject(item);
-        this.forward(list._id, [item._id]);
-    } else {
-        this.forward(rootListId, itemIds);
-    }
+    var route = window.location.pathname + window.location.hash;
+    todoRouter.load(route, this.refreshBound);
 };
 
 TodoApp.prototype.installListeners = function () {
@@ -85,7 +69,6 @@ TodoApp.prototype.installListeners = function () {
         ev.preventDefault();
         return false;
     });
-    this.listening = true;
 };
 
 TodoApp.prototype.getItem = function (itemId) {
@@ -104,20 +87,13 @@ TodoApp.prototype.getList = function (listId) {
     return this.host.get('/TodoList#'+listId);
 };
 
-TodoApp.prototype.buildLocationPath = function () {
-    var res = [];
-    for (var i = 0, l = this.path.length; i < l; i++) {
-        var state = this.path[i];
-        if (i === 0) {
-            res.push('/' + state.listId);
-        }
-        res.push('/' + state.itemId);
-    }
-    return res.join('');
-};
-
-TodoApp.prototype.refresh = function () {
+TodoApp.prototype.refresh = function (path) {
     var self = this;
+    self.path = path || self.path;
+    if (!self.active) {
+        self.installListeners();
+        self.active = true;
+    }
     // rerender DOM
     React.renderComponent(
         TodoAppView ({
@@ -134,8 +110,8 @@ TodoApp.prototype.refresh = function () {
         // TODO scroll into view
     }
     // set URI
-    var locationPath = this.buildLocationPath();
-    window.history.replaceState({},"",window.location.origin + locationPath);
+    var route = todoRouter.buildRoute(this.path);
+    window.history.replaceState({},"",window.location.origin + route);
 };
 
 // Suddenly jump to some entry in some list.
@@ -165,7 +141,6 @@ TodoApp.prototype.back = function (steps) {
  *          (chain of selections) or falsy (1st item on the list)
  * */
 TodoApp.prototype.forward = function (listId, itemIds) {
-    var self = this;
     var fwdList;
     if (!listId) { // default Tab behavior
         var item = this.getItem();
@@ -175,47 +150,9 @@ TodoApp.prototype.forward = function (listId, itemIds) {
         fwdList = new TodoList();
         listId = fwdList._id;
         item.set({childList: listId});
-    } else { // or fetch an existing one
-        fwdList = this.host.get('/TodoList#'+listId); // TODO fn+id sig
     }
-    if (!itemIds) { // normalize 2nd argument
-        itemIds = [undefined];
-    } else if (itemIds.constructor===String) {
-        itemIds = [itemIds];
-    } else if (itemIds.constructor!==Array) {
-        throw new Error('incorrect argument');
-    }
-    var oldPath = window.location.pathname + window.location.hash;
-    // we may need to fetch the data from the server so we use a callback, yes
-    fwdList.onObjectStateReady(function () {
-        if (window.location.pathname + window.location.hash != oldPath) {
-            return; // the user has likely navigated away while the data was loading
-        }
-        if (!fwdList.length()) {
-            fwdList.addObject(new TodoItem({text:'just do it'})); // FIXME move to TodoList
-        }
 
-        var itemId = itemIds.shift();
-        if (!itemId) { // take the 1st
-            itemId = fwdList.objectAt(0)._id;
-        }
-
-        self.path.push({
-            listId: listId,
-            itemId: itemId
-        });
-        if (itemIds.length) { // go deeper into sub-lists
-            item = fwdList.getObject(itemId);
-            self.forward(item.childList, itemIds);
-        } else { // the data is loaded for the entire requested path
-            if (!self.active) {
-               self.installListeners();
-               self.active = true;
-            }
-            self.refresh();
-        }
-        // TODO max delay
-    });
+    todoRouter.addPathItem(listId, itemIds, this.path, this.refreshBound);
 };
 
 TodoApp.prototype.selectItem = function (itemId) {

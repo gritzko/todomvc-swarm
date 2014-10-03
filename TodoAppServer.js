@@ -25,6 +25,8 @@ var EinarosWSStream = Swarm.EinarosWSStream;
 var TodoList = require('./model/TodoList');
 var TodoItem = require('./model/TodoItem');
 
+var todoRouter = require('./todoRouter');
+
 Swarm.env.debug = true;
 
 var port = 8000;
@@ -48,62 +50,14 @@ app.set('view engine', 'jsx');
 app.set('views', process.cwd() + '/view');
 
 app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
-    Spec.reQTokExt.lastIndex = 0;
-    var path = req.path;
-    var rootListId = null;
-    var itemIds = [];
-    var m;
-    Spec.reQTokExt.lastIndex = 0;
-    while (m = Spec.reQTokExt.exec(path)) {
-        var id = m && m[2];
-        if (!rootListId) {
-            rootListId = id;
-        } else {
-            itemIds.push(id);
-        }
-    }
-
-    if (!rootListId) {
+    var route = req.path;
+    todoRouter.load(route, function (path) {
+        // real route may differ (for ex: when now object with specified id found)
+        res.header('Location', todoRouter.buildRoute(path));
         res.render('index', {
-            app: {path: []}
+            app: {path: path}
         });
-        return;
-    }
-
-    function loadPath(path, listId, itemIds) {
-        console.log('loadPath(%s, %j)', listId, itemIds);
-        var list = app.swarmHost.get('/TodoList#' + listId);
-
-        list.onObjectStateReady(function(){
-            if (!list.length()) {
-                list.addObject(new TodoItem({text:'just do it'}));
-            }
-            if (!itemIds) {
-                itemIds = [fwdList.objectAt(0)._id];
-            } else if ('string' === typeof itemIds) {
-                itemIds = [itemIds];
-            }
-
-            var itemId = itemIds.shift();
-            path.push({
-                listId: listId,
-                itemId: itemId
-            });
-            var item = list.getObject(itemId);
-            if (!itemIds.length || !item.childList) {
-                res.header('Location', '/' + rootListId + '/' + path.map(function (el) {return el.itemId;}).join('/'));
-                res.render('index', {
-                    app: {path: path}
-                });
-            } else {
-                loadPath(path, item.childList, itemIds);
-            }
-            // TODO max delay
-        });
-
-    }
-
-    loadPath([], rootListId, itemIds);
+    });
 });
 
 
