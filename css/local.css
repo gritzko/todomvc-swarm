@@ -1,4 +1,4 @@
-/* ipad */
+/* ipad + iphone */
 @media (max-width: 570px) {
   .help {
     position: relative;
@@ -8,22 +8,30 @@
     overflow: hidden;
   }
   .todo-list {
-    width: 95%;
+    width: 95%!important;
   }
   .todo-list ul li .edit {
-    max-width: 86%;
+    max-width: 78%;
   }
   /* .clear-completed{ */
   /*   display: none; */
   /* } */
 
+  .todo-list ul li {
+    padding: 0;
+    margin: 0;
+  }
+
   .todo-list ul li input {
     font-size: 12px!important;
-    position: relative;
-    top: -6px;
+    position: absolute;
+    top: 7px;
+    left: 30px;
   }
   .todo-list ul li div {
     height: 30px;
+    position: relative;
+    overflow: hidden;
   }
 
   .todo-list ul li:before {
@@ -31,8 +39,9 @@
   }
   .todo-list ul li .toggle{
     width: 30px;
-    position: relative;
-    top: -6px;
+    position: absolute;
+    top: 7px;
+    left: 0px;
   }
   .todo-list ul li .toggle:after {
     font-size: 10px!important;
@@ -45,13 +54,15 @@
 
   .todo-list ul li .destroy {
     font-size: 13px;
+    position: absolute;
     right: -5px;
   }
   .clear-completed {
     font-size: 9px;
   }
-
-
+  .todo-list ul li.completed .edit {
+    color: #444;
+  }
   .todo-list ul li {
     height: 30px;
   }
@@ -67,9 +78,21 @@
     overflow: hidden;
   }
   .todo-list {
-    width: 190px;
+    width: 190px!important;
   }
   .todo-list ul li .edit {
-    max-width: 120px;
+    max-width: 120px!important;
   }
 }
+.help {display: none;}
+
+/* ipad only */
+@media (max-width: 570px) and (min-width: 211px){
+  .todo-list {
+    display: block;
+    margin: 60px auto 40px auto;
+    width: 300px!important;
+  }
+}
+    /* margin: 60px auto 40px auto; */
+    /* display:block!imprtant; */
