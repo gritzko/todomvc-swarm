@@ -4,6 +4,7 @@
   "description": "Example React+Swarm TodoMVC app.",
   "main": "js/app.js",
   "dependencies": {
+    "minimist": "",
     "browserify-shim": "^3.7.0",
     "compression": "^1.1.0",
     "connect-browserify": "~3.2.1",

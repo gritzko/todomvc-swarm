@@ -1,6 +1,9 @@
 (function() {
-    var sessionId = window.localStorage.getItem('localuser') || 
-        'A~' + Swarm.Spec.int2base((Math.random()*10000)|0);
-    window.localStorage.setItem('localuser',sessionId);
+    var sessionId = window.localStorage.getItem('localuser');
+    if (!sessionId) {
+        var rnd = Math.floor(Math.random()*(1<<30));
+        sessionId = 'A~' + Swarm.Spec.int2base(rnd);
+        window.localStorage.setItem('localuser',sessionId);
+    }
     window.app = new window.TodoApp(sessionId);
 }());

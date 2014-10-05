@@ -27,9 +27,22 @@ var TodoItem = require('./model/TodoItem');
 
 var todoRouter = require('./todoRouter');
 
-Swarm.env.debug = true;
+var args = process.argv.slice(2);
+var argv = require('minimist')(args, {
+    alias: {
+        port: 'p',
+        debug: 'D',
+        store: 's'
+    },
+    boolean: ['debug'],
+    default: {
+        store: '.swarm',
+        port: 8000,
+        debug: false
+    }
+});
 
-var port = 8000;
+Swarm.env.debug = argv.debug;
 
 var app = express();
 app.use(compression());
@@ -62,7 +75,7 @@ app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
 
 
 // use file storage
-var fileStorage = new Swarm.FileStorage('.swarm');
+var fileStorage = new Swarm.FileStorage(argv.store);
 
 // create Swarm Host
 app.swarmHost = new Swarm.Host('swarm~nodejs', 0, fileStorage);
@@ -71,12 +84,12 @@ Swarm.env.localhost = app.swarmHost;
 // start the HTTP server
 var httpServer = http.createServer(app);
 
-httpServer.listen(port, function (err) {
+httpServer.listen(argv.port, function (err) {
     if (err) {
         console.warn('Can\'t start server. Error: ', err, err.stack);
         return;
     }
-    console.log('Swarm server started port', port);
+    console.log('Swarm server started port', argv.port);
 });
 
 // start WebSocket server
