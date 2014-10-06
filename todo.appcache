@@ -1,0 +1,16 @@
+CACHE MANIFEST
+# 2014-10-03 v0.0.1a
+
+CACHE:
+/js/react.js
+/js/bundle.js
+/fake_auth_init.js
+/css/base.css
+/css/add.css
+/css/bg.png
+*
+
+NETWORK:
+
+FALLBACK:
+/ /offline.html
