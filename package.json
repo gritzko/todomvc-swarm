@@ -5,16 +5,16 @@
   "main": "js/app.js",
   "dependencies": {
     "minimist": "",
-    "browserify-shim": "^3.7.0",
+    "browserify-middleware": "~4.0.0",
     "compression": "^1.1.0",
-    "connect-browserify": "~3.2.1",
     "express": "^4.6.1",
     "express-react-views": "^0.5.0",
-    "react": "~0.11",
+    "lodash-express": "0.0.2",
     "node-jsx": "^0.11.0",
+    "react": "~0.11",
     "react-tools": "~0.11",
-    "ws": "^0.4.31",
-    "swarm": "git+https://github.com/gritzko/swarm.git"
+    "swarm": "git+https://github.com/gritzko/swarm.git",
+    "ws": "^0.4.31"
   },
   "devDependencies": {
     "browserify": "~2.36.0",
@@ -30,11 +30,7 @@
   "browserify": {
     "transform": [
       "reactify",
-      "envify",
-      "browserify-shim"
+      "envify"
     ]
-  },
-  "browserify-shim": {
-    "react": "global:React"
   }
 }
