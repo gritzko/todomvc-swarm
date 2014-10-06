@@ -37,13 +37,15 @@ var argv = require('minimist')(args, {
     alias: {
         port: 'p',
         debug: 'D',
-        store: 's'
+        store: 's',
+        repl: 'r'
     },
-    boolean: ['debug'],
+    boolean: ['debug','repl'],
     default: {
         store: '.swarm',
         port: 8000,
-        debug: false
+        debug: false,
+        repl: false
     }
 });
 
@@ -127,4 +129,9 @@ function onExit(exitCode) {
         console.log('swarm host closed');
         process.exit(exitCode);
     });
+}
+
+if (argv.repl) {
+    var repl = require('repl');
+    repl.start('>');
 }
