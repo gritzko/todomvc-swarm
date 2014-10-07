@@ -1,21 +1,19 @@
 BIN         = ./node_modules/.bin
 JSX_SOURCES = $(wildcard view/*.jsx)
-TARGETS     = dist/TodoApp.app.js dist/LocalTodoApp.app.js
-VIEWS       = $(patsubst view/%.jsx,dist/%.js,$(JSX_SOURCES))
+SOURCES = *.js model/*.js view/*.jsx
+LIBS = node_modules/**/*
+TARGETS     = dist/react.min.js dist/TodoApp.app.js dist/LocalTodoApp.app.js
 
 all: dist todo
 
-jsx: $(VIEWS)
+dist: $(TARGETS)
 
-dist: jsx $(TARGETS)
+dist/%.app.js: dist/react.min.js $(SOURCES)
+	@$(BIN)/browserify -x react -e $(patsubst dist/%.app.js,%.js,$@) -o $@
 
-dist/%.js: view/%.jsx
+dist/react.min.js: $(LIBS)
 	@mkdir -p $(@D)
-	@$(BIN)/jsx $< > .js && mv .js $@
-
-dist/%.app.js: ./%.js
-	@mkdir -p $(@D)
-	@$(BIN)/browserify $< -o $@
+	@$(BIN)/browserify -d -r react -p [minifyify --map dist/react.map.json --output dist/react.map.json] -o dist/react.min.js
 
 prepare:
 	@if [ ! -e node_modules/ ]; then npm install; fi

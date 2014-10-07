@@ -8,9 +8,7 @@ var http = require('http');
 var ws_lib = require('ws');
 // Express
 var express = require('express');
-var browserify = require('browserify-middleware');
 var compression = require('compression');
-//var jsx_views = require('express-react-views');
 var lodash_views = require('lodash-express');
 
 // React
@@ -54,10 +52,6 @@ Swarm.env.debug = argv.debug;
 var app = express();
 app.use(compression());
 app.use(express.static('.'));
-
-var react_shared = ['react'];
-app.use('/js/react.js', browserify(react_shared));
-app.use('/js/bundle.js', browserify('./TodoApp.js', {external: react_shared}));
 
 // configure view rendering engine
 lodash_views(app, 'lodash.html');
