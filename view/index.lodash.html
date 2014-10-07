@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/add.css"/>
 </head>
 <body>
-<div id='todoapp'>
-    <%=appView%>
-</div>
+    <div id='todoapp'>
+        <%=appView%>
+    </div>
     <span class='help'>
         Up/Down: change item,
         Tab: child list,
@@ -17,14 +17,8 @@
         Enter/Numpad plus: new item,
         Numpad minus: delete item
     </span>
-    <a href="https://twitter.com/swarm_js" class="twitter-follow-button" data-show-count="false">Follow @swarm_js</a>
-    <script>
-!function(d,s,id){var
-js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
-    </script>
-
-<script src="/js/react.js"></script>
-<script src="/js/bundle.js"></script>
-<script src="/fake_auth_init.js"></script>
+    <script src="/dist/react.min.js"></script>
+    <script src="/dist/TodoApp.app.js"></script>
+    <script src="/fake_auth_init.js"></script>
 </body>
 </html>
