@@ -13,7 +13,7 @@ dist/%.app.js: dist/react.min.js $(SOURCES)
 
 dist/react.min.js: $(LIBS)
 	@mkdir -p $(@D)
-	@$(BIN)/browserify -d -r react -p [minifyify --map dist/react.map.json --output dist/react.map.json] -o dist/react.min.js
+	@$(BIN)/browserify -r react -p [minifyify --map dist/react.map.json --output dist/react.map.json] -o dist/react.min.js
 
 prepare:
 	@if [ ! -e node_modules/ ]; then npm install; fi

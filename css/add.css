@@ -1,5 +1,6 @@
 /**
  * Copyright 2013-2014 Facebook, Inc.
+ * Copyright 2014 V. Grishchenko
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +15,6 @@
  * limitations under the License.
  * 
  * base.css overrides 
- */
-
-/**
- * We are not changing from display:none, but rather re-rendering instead. 
- * Therefore this needs to be displayed normally by default.
  */
 
 html,
@@ -124,7 +120,7 @@ span.bookmark {
 span.help {
     position: absolute;
     bottom: 12px;
-    right: 12px;
+    right: 24px;
     font-family: sans-serif;
     font-size: 16px;
     color: #aaa;
