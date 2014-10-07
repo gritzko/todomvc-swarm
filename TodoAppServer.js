@@ -68,6 +68,7 @@ app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
     todoRouter.load(route, function (path) {
         // real route may differ (for ex: when now object with specified id found)
         res.header('Location', todoRouter.buildRoute(path));
+        res.header('Content-Type', 'text/html; charset=utf-8');
         res.write(htmlTemplate.head);
         res.write(
             React.renderComponentToString(
