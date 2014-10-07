@@ -2,14 +2,13 @@
   "name": "todomvc-swarm",
   "version": "0.0.1",
   "description": "Example React+Swarm TodoMVC app.",
-  "main": "js/app.js",
+  "main": "dist/TodoApp.app.js",
   "dependencies": {
-    "minimist": "",
-    "browserify-middleware": "~4.0.0",
     "compression": "^1.1.0",
     "express": "^4.6.1",
     "express-react-views": "^0.5.0",
     "lodash-express": "0.0.2",
+    "minimist": "^1.1.0",
     "node-jsx": "^0.11.0",
     "react": "~0.11",
     "react-tools": "~0.11",
@@ -17,13 +16,17 @@
     "ws": "^0.4.31"
   },
   "devDependencies": {
-    "browserify": "~2.36.0",
+    "browserify": "^2.36.0",
     "envify": "~1.2.0",
+    "minifyify": "^4.4.0",
     "reactify": "~0.4.0",
     "statics": "~0.1.0"
   },
   "scripts": {
-    "start": "node server.js"
+    "postinstall": "make dist",
+    "prestart": "make dist",
+    "start": "node TodoAppServer.js",
+    "preuninstall": "make clean"
   },
   "author": "Bill Fisher, Andrew Popp and finally Victor Grishchenko",
   "license": "Apache 2",

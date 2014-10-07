@@ -2,8 +2,8 @@ CACHE MANIFEST
 #2014-10-07 v0.0.2
 
 CACHE:
-/js/react.js
-/js/bundle.js
+/dist/react.min.js
+/dist/TodoApp.app.js
 /fake_auth_init.js
 /css/base.css
 /css/add.css
