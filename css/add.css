@@ -124,22 +124,13 @@ span.bookmark {
 span.help {
     position: absolute;
     bottom: 12px;
+    right: 12px;
     font-family: sans-serif;
     font-size: 16px;
     color: #aaa;
     z-index: -2;
     max-width: 70%;
     white-space: pre;
+    text-align: right;
 }
 
-iframe#twitter-widget-0 {
-    position: absolute;
-    bottom: 24px;
-    right: 24px;
-    z-index: -2;
-    opacity: 0.5;
-}
-
-a.twitter-follow-button {
-    display: none;
-}
