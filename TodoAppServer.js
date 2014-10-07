@@ -139,7 +139,7 @@ if (argv.repl) {
 function loadHtmlTemplate () {
     // The code depends on the version of React.
     // Better if React versions match (here and in package.json)
-    var reactUrl = argv.cdn ? 'http://fb.me/react-0.11.2.min.js' : '/dist/react.min.js'
+    var reactUrl = argv.cdn ? 'http://fb.me/react-0.11.2.min.js' : '/dist/react-0.11.2.min.js'
     var css1 = fs.readFileSync('./css/base.css').toString();
     var css2 = fs.readFileSync('./css/add.css').toString();
     var css = css1 + css2; // the license differs :(
