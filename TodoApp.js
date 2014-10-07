@@ -25,7 +25,7 @@ var todoRouter = require('./todoRouter');
 var TodoList = require('./model/TodoList');
 var TodoItem = require('./model/TodoItem');
 
-Swarm.env.debug = true;
+Swarm.env.debug = false;
 
 var TodoAppView = require('./view/TodoAppView.jsx');
 

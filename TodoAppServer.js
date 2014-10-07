@@ -3,13 +3,13 @@
 // node libs
 var url = require('url');
 var http = require('http');
+var fs = require('fs');
 
 // WebSockets support
 var ws_lib = require('ws');
 // Express
 var express = require('express');
 var compression = require('compression');
-var lodash_views = require('lodash-express');
 
 // React
 // jsx support
@@ -33,12 +33,13 @@ var todoRouter = require('./todoRouter');
 var args = process.argv.slice(2);
 var argv = require('minimist')(args, {
     alias: {
-        port: 'p',
+        port:  'p',
         debug: 'D',
         store: 's',
-        repl: 'r'
+        repl:  'r',
+        cdn:   'c'
     },
-    boolean: ['debug','repl'],
+    boolean: ['debug','repl','cdn'],
     default: {
         store: '.swarm',
         port: 8000,
@@ -53,16 +54,13 @@ var app = express();
 app.use(compression());
 app.use(express.static('.'));
 
-// configure view rendering engine
-lodash_views(app, 'lodash.html');
-app.set('view engine', 'lodash.html');
-app.set('views', process.cwd() + '/view');
+var htmlTemplate = loadHtmlTemplate();
 
 // empty page for offline support
 app.get('/offline.html', function (req, res) {
-    res.render('index', {
-        appView: ''
-    });
+    res.write(htmlTemplate.head);
+    res.write(htmlTemplate.tail);
+    res.end();
 });
 
 app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
@@ -70,12 +68,17 @@ app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
     todoRouter.load(route, function (path) {
         // real route may differ (for ex: when now object with specified id found)
         res.header('Location', todoRouter.buildRoute(path));
-        res.render('index', {
-            appView: React.renderComponentToString(TodoAppView({
-                key: 'TodoApp',
-                app: {path: path}
-            }))
-        });
+        res.write(htmlTemplate.head);
+        res.write(
+            React.renderComponentToString(
+                TodoAppView({
+                    key: 'TodoApp',
+                    app: {path: path}
+                })
+            )
+        );
+        res.write(htmlTemplate.tail);
+        res.end();
     });
 });
 
@@ -89,6 +92,7 @@ Swarm.env.localhost = app.swarmHost;
 
 // start the HTTP server
 var httpServer = http.createServer(app);
+
 
 httpServer.listen(argv.port, function (err) {
     if (err) {
@@ -128,4 +132,23 @@ function onExit(exitCode) {
 if (argv.repl) {
     var repl = require('repl');
     repl.start('>');
+}
+
+// Some ungodly magic to send prerendered displayable HTML in one
+// piece. Less RTTs => faster load times, you know.
+function loadHtmlTemplate () {
+    // The code depends on the version of React.
+    // Better if React versions match (here and in package.json)
+    var reactUrl = argv.cdn ? 'http://fb.me/react-0.11.2.min.js' : '/dist/react.min.js'
+    var css1 = fs.readFileSync('./css/base.css').toString();
+    var css2 = fs.readFileSync('./css/add.css').toString();
+    var css = css1 + css2; // the license differs :(
+    var template = fs.readFileSync('./view/index.html').toString();
+    template = template.replace('$CSS',css);
+    template = template.replace('$REACT',reactUrl);
+    var i = template.indexOf('$VIEW');
+    return {
+        head: template.substr(0,i),
+        tail: template.substr(i+'$VIEW'.length)
+    };
 }
