@@ -26,6 +26,7 @@ var TodoList = require('./model/TodoList');
 var TodoItem = require('./model/TodoItem');
 
 Swarm.env.debug = false;
+var isEmbed = (window.parent!==window);
 
 var TodoAppView = require('./view/TodoAppView.jsx');
 
@@ -111,7 +112,13 @@ TodoApp.prototype.refresh = function (path) {
     }
     // set URI
     var route = todoRouter.buildRoute(this.path);
-    window.history.replaceState({},"",window.location.origin + route);
+    var newLink = window.location.origin + route;
+    window.history.replaceState({},"",newLink);
+    if (isEmbed) {
+        var edit = document.getElementById("self");
+        edit.setAttribute('href', newLink);
+        edit.innerHTML = 'link';
+    }
 };
 
 // Suddenly jump to some entry in some list.

@@ -117,16 +117,25 @@ span.bookmark {
     width: 40px;
 }
 
-span.help {
+span.help, a#self {
     position: absolute;
-    bottom: 12px;
-    right: 24px;
+    bottom: 24px;
     font-family: sans-serif;
     font-size: 16px;
     color: #aaa;
-    z-index: -2;
     max-width: 70%;
     white-space: pre;
+}
+
+span.help {
+    right: 24px;
     text-align: right;
+    z-index: -2;
+}
+
+a#self {
+    left: 24px;
+    text-align: left;
+    z-index: 2;
 }
 
