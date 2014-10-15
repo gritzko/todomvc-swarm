@@ -28,7 +28,7 @@ var EinarosWSStream = Swarm.EinarosWSStream;
 var TodoList = require('./model/TodoList');
 var TodoItem = require('./model/TodoItem');
 
-var todoRouter = require('./todoRouter');
+var TodoRouter = require('./TodoRouter');
 
 var args = process.argv.slice(2);
 var argv = require('minimist')(args, {
@@ -65,9 +65,10 @@ app.get('/offline.html', function (req, res) {
 
 app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
     var route = req.path;
-    todoRouter.load(route, function (path) {
+    var router = new TodoRouter();
+    router.load(route, function (path) {
         // real route may differ (for ex: when now object with specified id found)
-        res.header('Location', todoRouter.buildRoute(path));
+        res.header('Location', router.buildRoute(path));
         res.header('Content-Type', 'text/html; charset=utf-8');
         res.write(htmlTemplate.head);
         res.write(
