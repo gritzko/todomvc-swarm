@@ -109,6 +109,8 @@ TodoApp.prototype.refresh = function (path) {
     var edit = document.getElementById(item._id);
     if (edit) {
         edit.focus();
+        // safari text select fix
+        edit.value = edit.value;
         // TODO scroll into view
     }
     // set URI
