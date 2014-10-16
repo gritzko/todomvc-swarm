@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var Swarm = require('swarm');
 
@@ -15,6 +15,10 @@ var TodoItem = Swarm.Model.extend('TodoItem', {
 
     complete: function () {
         this.set({ completed: true });
+    },
+
+    uncomplete: function () {
+        this.set({ completed: false });
     }
 
 });
