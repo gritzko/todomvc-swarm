@@ -20,7 +20,7 @@ var React = require('react');
 var Swarm = require('swarm');
 var Spec = Swarm.Spec;
 
-var todoRouter = require('./todoRouter');
+var TodoRouter = require('./TodoRouter');
 
 var TodoList = require('./model/TodoList');
 var TodoItem = require('./model/TodoItem');
@@ -35,6 +35,7 @@ function TodoApp (ssnid, listId) {
     this.active = false;
     this.ssnid = ssnid;
 
+    this.router = new TodoRouter();
     this.refreshBound = this.refresh.bind(this);
     this.initSwarm();
     this.parseUri();
@@ -50,7 +51,7 @@ TodoApp.prototype.initSwarm = function () {
 
 TodoApp.prototype.parseUri = function () {
     var route = window.location.pathname + window.location.hash;
-    todoRouter.load(route, this.refreshBound);
+    this.router.load(route, this.refreshBound);
 };
 
 TodoApp.prototype.installListeners = function () {
@@ -108,16 +109,18 @@ TodoApp.prototype.refresh = function (path) {
     var edit = document.getElementById(item._id);
     if (edit) {
         edit.focus();
+        // safari text select fix
+        edit.value = edit.value;
         // TODO scroll into view
     }
     // set URI
-    var route = todoRouter.buildRoute(this.path);
+    var route = this.router.buildRoute(this.path);
     var newLink = window.location.origin + route;
     window.history.replaceState({},"",newLink);
     if (isEmbed) {
-        var edit = document.getElementById("self");
-        edit.setAttribute('href', newLink);
-        edit.innerHTML = 'link';
+        var link = document.getElementById("self");
+        link.setAttribute('href', newLink);
+        link.innerHTML = 'link';
     }
 };
 
@@ -159,7 +162,7 @@ TodoApp.prototype.forward = function (listId, itemIds) {
         item.set({childList: listId});
     }
 
-    todoRouter.addPathItem(listId, itemIds, this.path, this.refreshBound);
+    this.router.addPathItem(listId, itemIds, this.path, this.refreshBound);
 };
 
 TodoApp.prototype.selectItem = function (itemId) {
