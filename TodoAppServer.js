@@ -144,7 +144,8 @@ function loadHtmlTemplate () {
     var reactUrl = argv.cdn ? 'http://fb.me/react-0.11.2.min.js' : '/dist/react-0.11.2.min.js'
     var css1 = fs.readFileSync('./css/base.css').toString();
     var css2 = fs.readFileSync('./css/add.css').toString();
-    var css = css1 + css2; // the license differs :(
+    var css3 = fs.readFileSync('./css/touch.css').toString();
+    var css = css1 + css2 + css3; // the license differs :(
     var template = fs.readFileSync('./view/index.html').toString();
     template = template.replace('$CSS',css);
     template = template.replace('$REACT',reactUrl);
