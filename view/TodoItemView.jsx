@@ -19,7 +19,6 @@
 var React = require('react');
 var Swarm = require('swarm');
 var TodoItem = require('../model/TodoItem');
-var ReactPropTypes = React.PropTypes;
 
 var cx = require('react/lib/cx');
 
@@ -34,13 +33,19 @@ var TodoItemView = React.createClass({
     render: function() {
 
         var todo = this.sync;
-        var uistate = this.props.UIState;
 
         var bookmark = <noscript/>;
+        var tab = this.props.app.isTouch
+                    ? <span
+                        className={todo.childList==="" ? "tab" : "tab child-list"}
+                        onTouchEnd={this._onTabTouch}
+                        onClick={this._onTabTouch}
+                        >⇢</span>
+                    : <noscript/>;
+
         if (todo.childList) {
             bookmark = <span className="bookmark"> </span>; //&#8594;
         }
-
 
         // List items should get the class 'editing' when editing
         // and 'completed' when marked as completed.
@@ -51,9 +56,9 @@ var TodoItemView = React.createClass({
             <li
                 className={cx({
                     'completed': todo.completed,
-                    'selected': this.sync._id===uistate.itemId
+                    'selected': this.props.selected
                 })}
-                key={todo.id}>
+                key={todo._id}>
 
                 <div className="view">
                     <input
@@ -63,16 +68,21 @@ var TodoItemView = React.createClass({
                         onChange={this._onToggle}
                         />
                     <input
-                        id={this.sync._id}
+                        id={todo._id}
                         className="edit"
                         onChange={this._onChange}
                         onClick={this._focus}
                         value={todo.text}
                         ref="text"
-                        tabIndex={this.props.tabindex}
+                        tabIndex={this.props.tabIndex}
                         />
-                    <button className="destroy" onClick={this._onDestroyClick} />
+                    <button
+                      className="destroy"
+                      onClick={this._onDestroyClick}
+                      onTouchEnd={this._onDestroyClick}
+                      />
                     {bookmark}
+                    {tab}
                 </div>
 
             </li>
@@ -81,7 +91,7 @@ var TodoItemView = React.createClass({
 
     _focus: function () {
         var app = this.props.app;
-        app.go(this.props.UIState.listId, this.sync._id);
+        app.go(this.props.listId, this.sync._id);
     },
 
     _onToggle: function () {
@@ -101,11 +111,19 @@ var TodoItemView = React.createClass({
     },
 
     _onDestroyClick: function() {
-        app.delete(this.props.UIState.listId, this.sync._id);
+        if (this.sync.childList !== ""){
+            if (confirm("Sure?")) {
+                app.delete(this.props.listId, this.sync._id);
+            }
+        } else {
+            app.delete(this.props.listId, this.sync._id);
+        }
+    },
+
+    _onTabTouch: function(){
+        app.forward();
     }
 
 });
-
-var ENTER_KEY_CODE = 13;
 
 module.exports = TodoItemView;

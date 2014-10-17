@@ -62,12 +62,13 @@ body {
 }
 
 .todo-list ul li .edit {
+    margin-top: 6px;
+    margin-bottom: 6px;
     display: inline;
     border: none;
     box-shadow: none;
     width: 455px;
     max-width: 455px;
-    max-width: 
     position: static;
     margin-left: 12px;
     background: transparent;
@@ -81,6 +82,7 @@ input:focus {
 
 .todo-list ul li.selected {
     background: #f2f2ff;
+    position: relative;
 }
 
 .todo-list.top ul li.selected {
@@ -92,6 +94,9 @@ input:focus {
 }
 
 span.bookmark {
+    position: absolute;
+    right: -5px;
+    top: -3px;
     font-size: 20px;
     background: #ff9;
     box-shadow: 1px 1px 1px grey;
@@ -100,7 +105,6 @@ span.bookmark {
     min-height: 24px;
     font-family: mono;
     /* border: grey 1px; */
-    left: 4px;
     color: #888;
     padding: 4px;
     white-space: pre;
@@ -111,10 +115,16 @@ span.bookmark {
 
 .todo-list ul li.selected span.bookmark {
     width: 50px;
+    right: -5px;
 }
 
 .todo-list.top ul li.selected span.bookmark {
     width: 40px;
+    right: -15px;
+}
+
+.footer {
+    z-index: auto;
 }
 
 span.help, a#self {
@@ -139,3 +149,7 @@ a#self {
     z-index: 2;
 }
 
+.clear-completed {
+  position: absolute;
+  right: 10px;
+}

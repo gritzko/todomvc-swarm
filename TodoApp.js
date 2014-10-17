@@ -39,6 +39,9 @@ function TodoApp (ssnid, listId) {
     this.refreshBound = this.refresh.bind(this);
     this.initSwarm();
     this.parseUri();
+    this.isTouch = ('ontouchstart' in window)
+      || (navigator.MaxTouchPoints > 0)
+      || (navigator.msMaxTouchPoints > 0);
 }
 
 TodoApp.prototype.initSwarm = function () {

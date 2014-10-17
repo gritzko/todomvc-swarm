@@ -1,0 +1,14 @@
+.todo-list ul li.selected { position: relative }
+.todo-list ul li span.tab { display: none }
+.todo-list ul li.selected span.tab {
+  display: block;
+  position: absolute;
+  width: 100px;
+  height: 20px;
+  right: -120px;
+  top: 10px;
+  font-size: 50px;
+  border: none;
+  color: #d9d9d9;
+}
+.todo-list ul li.selected span.tab.child-list { right: -130px }

@@ -25,7 +25,6 @@ var React = require('react');
 var Swarm = require('swarm');
 var TodoListView = require('./TodoListView.jsx');
 
-
 var TodoAppView = React.createClass({
 
     getInitialState: function () {
@@ -52,21 +51,20 @@ var TodoAppView = React.createClass({
 
     render: function() {
 
-        var todoLists = [];
-        var path = this.props.app.path;
-        for(var i=0; i<path.length; i++) {
-            var uistate = path[i];
-            todoLists.push(
+        var lists = this.props.app.path.map(function (pathEntry, index) {
+            return (
                 <TodoListView
-                    key={uistate.listId}
-                    UIState={uistate}
+                    key={pathEntry.listId}
+                    selectedItem={pathEntry.itemId}
+                    depth={index}
                     app={this.props.app}
                 />
             );
-        }
+        }, this);
+
         return (
             <div className="todopane">
-                {todoLists}
+                {lists}
             </div>
         );
     }
