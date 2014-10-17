@@ -35,8 +35,18 @@ var TodoItemView = React.createClass({
         var todo = this.sync;
 
         var bookmark = <noscript/>;
+        var tab      = <noscript/>;
         if (todo.childList) {
             bookmark = <span className="bookmark"> </span>; //&#8594;
+        } else {
+            tab = this.props.app.isTouch
+                    ? <span
+                        className="tab"
+                        onTouchEnd={this._onTabTouch}
+                        onClick={this._onTabTouch}
+                        >⇢</span>
+                        // >↝</span>
+                    : '';
         }
 
 
@@ -69,8 +79,13 @@ var TodoItemView = React.createClass({
                         ref="text"
                         tabIndex={this.props.tabIndex}
                         />
-                    <button className="destroy" onClick={this._onDestroyClick} />
+                    <button
+                      className="destroy"
+                      onClick={this._onDestroyClick}
+                      onTouchEnd={this._onDestroyClick}
+                      />
                     {bookmark}
+                    {tab}
                 </div>
 
             </li>
@@ -106,8 +121,12 @@ var TodoItemView = React.createClass({
         } else {
             app.delete(this.props.listId, this.sync._id);
         }
-    }
+    },
 
+    _onTabTouch: function(){
+        app.forward();
+    }
+    
 });
 
 module.exports = TodoItemView;
