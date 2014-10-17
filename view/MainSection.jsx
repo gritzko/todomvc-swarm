@@ -22,11 +22,18 @@ var TodoItemView = require('./TodoItemView.jsx');
 
 var MainSection = React.createClass({
 
+    getDefaultProps: function () {
+        return {
+            listenEntries: true
+        }
+    },
+
+    mixins: [Swarm.ReactMixin],
 
     render: function() {
-
-        var sync = this.props.list;
-        var stats = sync.stats();
+        var todoList = this.sync;
+        var selectedItem = this.props.selectedItem;
+        var stats = todoList.stats();
 
         // This section should be hidden by default
         // and shown when there are todos.
@@ -34,19 +41,18 @@ var MainSection = React.createClass({
             return <noscript/>;
         }
 
-        var objects = sync.objects;
-        var todos = [];
-        for(var i=0; i<objects.length; i++) {
-            var spec = objects[i].spec();
-            todos.push(
+        var todos = todoList.objects.map(function (obj, index) {
+            var itemId = obj._id;
+            return (
                 <TodoItemView
-                    key={spec.id()}
-                    UIState={this.props.UIState}
+                    key={itemId}
+                    listId={todoList._id}
+                    selected={selectedItem === itemId}
+                    tabIndex={index}
                     app={this.props.app}
-                    tabIndex={i}
                 />
             );
-        }
+        }, this);
 
         return (
             <section className="main_section">
@@ -54,7 +60,7 @@ var MainSection = React.createClass({
                     className="toggle-all"
                     type="checkbox"
                     onChange={this._onToggleCompleteAll}
-                    checked={this.props.areAllComplete ? 'checked' : ''}>
+                    checked={stats.left === 0 ? 'checked' : ''}>
                 </input>
                 <label htmlFor="toggle-all">Mark all as complete</label>
 
@@ -70,7 +76,7 @@ var MainSection = React.createClass({
     * Event handler to mark all TODOs as complete
     */
     _onToggleCompleteAll: function() {
-        this.props.list.completeAll();
+        this.sync.completeAll();
     }
 
 });

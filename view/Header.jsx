@@ -25,10 +25,10 @@ var Header = React.createClass({
         // TODO list some meaningful header (apart from the id)
         //<h1>todos</h1>
         return (
-            <header id="header">
+            <header className="header">
             </header>
         );
-    },
+    }
 
 });
 

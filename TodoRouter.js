@@ -54,7 +54,7 @@ TodoRouter.prototype.addPathItem = function (listId, itemIds, path, cb) {
                 itemId: item._id
             });
             if (item.childList && itemIds.length) {
-                this.addPathItem(item.childList, itemIds, path, cb);
+                self.addPathItem(item.childList, itemIds, path, cb);
                 return;
             }
         }
