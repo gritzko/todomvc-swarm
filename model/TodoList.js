@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var Swarm = require('swarm');
 var TodoItem = require('./TodoItem');
@@ -8,11 +8,20 @@ var TodoList = Swarm.Vector.extend('TodoList', {
     objectType: TodoItem,
 
     completeAll: function() {
-        for (var key in this.objects) {
-            var obj = this.objects[key];
-            if (obj && obj._version && !obj.completed) {
-                obj.complete();
-            }
+        var stats = this.stats();
+        if (stats.left === 0) {
+            // all todos completed, so uncomplete them
+            this.objects.forEach(function (obj) {
+                if (obj && obj._version) {
+                    obj.uncomplete();
+                }
+            });
+        } else {
+            this.objects.forEach(function (obj) {
+                if (obj && obj._version && !obj.completed) {
+                    obj.complete();
+                }
+            });
         }
     },
 
@@ -35,15 +44,14 @@ var TodoList = Swarm.Vector.extend('TodoList', {
             completed: 0,
             left: 0
         };
-        for(var spec in this.objects) {
-            var obj = this.objects[spec];
+        this.objects.forEach(function (obj) {
             ret.entries++;
             if (obj.completed) {
                 ret.completed++;
             } else {
                 ret.left++;
             }
-        }
+        });
         return ret;
     }
 });

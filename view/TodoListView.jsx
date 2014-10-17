@@ -38,27 +38,21 @@ var TodoListView = React.createClass({
     },
 
     render: function() {
-        var uistate = this.props.UIState;
         var app = this.props.app;
+        var spec = this.sync.spec();
         var classes = "todo-list";
-        if (this.props.depth===0) {
+        if (this.props.depth === app.path.length - 1) {
             classes += ' top';
         }
         return (
             <div className={classes}>
-                <Header
-                    list={this.sync}
-                    UIState={uistate}
-                    />
+                <Header />
                 <MainSection
-                    list={this.sync}
-                    UIState={uistate}
+                    spec={spec}
+                    selectedItem={this.props.selectedItem}
                     app={app}
                     />
-                <Footer
-                    list={this.sync}
-                    UIState={uistate}
-                    />
+                <Footer spec={spec} listenEntries={true} />
             </div>
         );
     },

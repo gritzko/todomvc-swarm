@@ -67,7 +67,6 @@ body {
     box-shadow: none;
     width: 455px;
     max-width: 455px;
-    max-width: 
     position: static;
     margin-left: 12px;
     background: transparent;
@@ -115,6 +114,10 @@ span.bookmark {
 
 .todo-list.top ul li.selected span.bookmark {
     width: 40px;
+}
+
+.footer {
+    z-index: auto;
 }
 
 span.help, a#self {

@@ -19,17 +19,23 @@
 var React = require('react');
 var Swarm = require('swarm');
 var TodoItem = require('../model/TodoItem');
-var ReactPropTypes = React.PropTypes;
 
 var Footer = React.createClass({
+
+    getDefaultProps: function () {
+        return {
+            listenEntries: true
+        };
+    },
+
+    mixins: [Swarm.ReactMixin],
 
     /**
     * @return {object}
     */
     render: function() {
-
-        var list = this.props.list;
-        var stats = list.stats();
+        var todoList = this.sync;
+        var stats = todoList.stats();
 
         if (stats.entries === 0) {
             return <noscript />;
@@ -40,23 +46,24 @@ var Footer = React.createClass({
 
         // Undefined and thus not rendered if no completed items are left.
         var clearCompletedButton;
-        if (stats.left===0) {
-            clearCompletedButton =
+        if (stats.completed > 0) {
+            // some todoitems marked as completed
+            // show "clear completed" button
+            clearCompletedButton = (
                 <button
                     className="clear-completed"
-                    onClick={this._onClearCompletedClick}>
+                    onClick={this._onClearCompletedClick}
+                >
                     Clear completed ({stats.completed})
-                </button>;
+                </button>
+            );
         }
         // TODO: show the entry's metadata
 
         return (
             <footer className="footer">
                 <span cl="todo-count">
-                    <strong>
-                        {stats.left}
-                    </strong>
-                    {itemsLeftPhrase}
+                    <strong>{stats.left}</strong> {itemsLeftPhrase}
                 </span>
                 {clearCompletedButton}
             </footer>
@@ -67,9 +74,10 @@ var Footer = React.createClass({
     * Event handler to delete all completed TODOs
     */
     _onClearCompletedClick: function() {
-        this.sync.removeCompleted();
-        if (this.sync.length()===0) {
-            this.sync.addObject(new TodoItem()); // TODO create default
+        var todoList = this.sync;
+        todoList.removeCompleted();
+        if (todoList.length() === 0) {
+            todoList.addObject(new TodoItem()); // TODO create default
         }
     }
 
