@@ -99,7 +99,13 @@ var TodoItemView = React.createClass({
     },
 
     _onDestroyClick: function() {
-        app.delete(this.props.listId, this.sync._id);
+        if (this.sync.childList !== ""){
+            if (confirm("Sure?")) {
+                app.delete(this.props.listId, this.sync._id);
+            }
+        } else {
+            app.delete(this.props.listId, this.sync._id);
+        }
     }
 
 });
