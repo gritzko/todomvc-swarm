@@ -11,3 +11,4 @@
   border: none;
   color: #d9d9d9;
 }
+.todo-list ul li.selected span.tab.child-list { right: -130px }

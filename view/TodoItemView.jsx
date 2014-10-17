@@ -35,20 +35,17 @@ var TodoItemView = React.createClass({
         var todo = this.sync;
 
         var bookmark = <noscript/>;
-        var tab      = <noscript/>;
-        if (todo.childList) {
-            bookmark = <span className="bookmark"> </span>; //&#8594;
-        } else {
-            tab = this.props.app.isTouch
+        var tab = this.props.app.isTouch
                     ? <span
-                        className="tab"
+                        className={todo.childList==="" ? "tab" : "tab child-list"}
                         onTouchEnd={this._onTabTouch}
                         onClick={this._onTabTouch}
                         >⇢</span>
-                        // >↝</span>
-                    : '';
-        }
+                    : <noscript/>;
 
+        if (todo.childList) {
+            bookmark = <span className="bookmark"> </span>; //&#8594;
+        }
 
         // List items should get the class 'editing' when editing
         // and 'completed' when marked as completed.
@@ -126,7 +123,7 @@ var TodoItemView = React.createClass({
     _onTabTouch: function(){
         app.forward();
     }
-    
+
 });
 
 module.exports = TodoItemView;
