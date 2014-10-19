@@ -46,7 +46,7 @@ function TodoApp (ssnid, listId) {
 
 TodoApp.prototype.initSwarm = function () {
     //this.storage = null;
-    this.storage = new Swarm.SharedWebStorage('webst',{persistent:true});
+    this.storage = new Swarm.LevelStorage('level');
     this.wsServerUri = 'ws://'+window.location.host;
     this.host = Swarm.env.localhost = new Swarm.Host(this.ssnid,'',this.storage);
     this.host.connect(this.wsServerUri, {delay: 50});

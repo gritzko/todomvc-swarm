@@ -32,34 +32,42 @@ TodoRouter.prototype.addPathItem = function (listId, itemIds, path, cb) {
 
     var list = Swarm.env.localhost.get('/TodoList#' + listId);
     list.onObjectStateReady(function () {
-        if (self.itemIds != itemIds) {
-            // prevent parallel loading of several routes
-            return;
-        }
-        var item;
-        if (!list.length()) {
-            item = new TodoItem();
-            list.addObject(item);
-            itemIds.length = 0;
-        } else if (itemIds.length === 0) {
-            item = list.objectAt(0);
-        } else {
-            item = list.getObject(itemIds.shift());
-        }
+        // FIXME Race conditions when using Level Storage
+        // If we clean storage on client and reload app,
+        // list will be empty at this point on client
+        // Looks like onObjectStateReady fired before
+        // list.objects are filled
+        console.log('RACE! List length:', list.length());
+        setTimeout(function() {
+          if (self.itemIds != itemIds) {
+              // prevent parallel loading of several routes
+              return;
+          }
+          var item;
+          if (!list.length()) {
+              item = new TodoItem();
+              list.addObject(item);
+              itemIds.length = 0;
+          } else if (itemIds.length === 0) {
+              item = list.objectAt(0);
+          } else {
+              item = list.getObject(itemIds.shift());
+          }
 
-        if (item) {
-            // item found
-            path.push({
-                listId: listId,
-                itemId: item._id
-            });
-            if (item.childList && itemIds.length) {
-                self.addPathItem(item.childList, itemIds, path, cb);
-                return;
-            }
-        }
-        self.itemIds = null;
-        cb(path);
+          if (item) {
+              // item found
+              path.push({
+                  listId: listId,
+                  itemId: item._id
+              });
+              if (item.childList && itemIds.length) {
+                  self.addPathItem(item.childList, itemIds, path, cb);
+                  return;
+              }
+          }
+          self.itemIds = null;
+          cb(path);
+        }, 1000);
     });
 };
 
