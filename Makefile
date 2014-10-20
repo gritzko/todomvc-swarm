@@ -7,7 +7,7 @@ all: libs dist todo
 
 libs:
 	npm install
-	curl -L -o dist/react-0.11.2.min.js http://fb.me/react-0.11.2.min.js
+	cp node_modules/react/dist/react.min.js dist/react.min.js
 
 dist: $(TARGETS)
 
