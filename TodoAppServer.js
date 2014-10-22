@@ -120,13 +120,24 @@ process.on('SIGTERM', onExit);
 process.on('SIGINT', onExit);
 process.on('SIGQUIT', onExit);
 
+process.on('uncaughtException', function(err) {
+    console.log('uncaught:', err, err.stack);
+    onExit(100);
+});
+
 function onExit(exitCode) {
     console.log('shutting down http-server...');
     httpServer.close();
 
     console.log('closing swarm host...');
+    var exitTimeoutTimer = setTimeout(function () {
+        console.log('swarm host close timeout');
+        process.exit(exitCode);
+    }, 5000);
+
     app.swarmHost.close(function () {
         console.log('swarm host closed');
+        clearTimeout(exitTimeoutTimer);
         process.exit(exitCode);
     });
 }
