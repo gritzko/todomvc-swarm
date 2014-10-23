@@ -22,6 +22,22 @@
     "reactify": "~0.4.0",
     "statics": "~0.1.0"
   },
+  "files": [
+    "css/*.css",
+    "css/*png",
+    "model/*.js",
+    "view/*.jsx",
+    "view/index.html",
+    "TodoApp.js",
+    "TodoAppServer.js",
+    "TodoRouter.js",
+    "README.md",
+    "LICENSE",
+    "Makefile",
+    "fake_auth_init.js",
+    "todo.appcache",
+    "run.sh"
+  ],
   "scripts": {
     "postinstall": "make dist",
     "prestart": "make dist",
