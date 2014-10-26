@@ -39,8 +39,7 @@
     "run.sh"
   ],
   "scripts": {
-    "postinstall": "make dist",
-    "prestart": "make dist",
+    "prestart": "make all",
     "start": "node TodoAppServer.js",
     "preuninstall": "make clean"
   },
