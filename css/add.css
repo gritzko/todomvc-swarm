@@ -127,9 +127,8 @@ span.bookmark {
     z-index: auto;
 }
 
-span.help, a#self {
+span.help, a#self, span.golink {
     position: absolute;
-    bottom: 24px;
     font-family: sans-serif;
     font-size: 16px;
     color: #aaa;
@@ -137,16 +136,26 @@ span.help, a#self {
     white-space: pre;
 }
 
+span.golink {
+    right: 24px;
+    text-align: right;
+    z-index: 2;
+    top: 24px;
+    opacity: 0.5;
+}
+
 span.help {
     right: 24px;
     text-align: right;
     z-index: -2;
+    bottom: 24px;
 }
 
 a#self {
     left: 24px;
     text-align: left;
     z-index: 2;
+    bottom: 24px;
 }
 
 .clear-completed {
