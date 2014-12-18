@@ -66,11 +66,10 @@ app.get('/offline.html', function (req, res) {
 app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
     var route = req.path;
     var router = new TodoRouter();
+    res.header('Content-Type', 'text/html; charset=utf-8');
+    res.header('Cache-Control', 'private, max-age=0, no-cache');
+    res.write(htmlTemplate.head);
     router.load(route, function (path) {
-        // real route may differ (for ex: when now object with specified id found)
-        res.header('Location', router.buildRoute(path));
-        res.header('Content-Type', 'text/html; charset=utf-8');
-        res.write(htmlTemplate.head);
         res.write(
             React.renderComponentToString(
                 TodoAppView({
