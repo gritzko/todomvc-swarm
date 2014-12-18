@@ -11,13 +11,13 @@ var TodoList = Swarm.Vector.extend('TodoList', {
         var stats = this.stats();
         if (stats.left === 0) {
             // all todos completed, so uncomplete them
-            this.objects.forEach(function (obj) {
+            this.forEach(function (obj) {
                 if (obj && obj._version) {
                     obj.uncomplete();
                 }
             });
         } else {
-            this.objects.forEach(function (obj) {
+            this.forEach(function (obj) {
                 if (obj && obj._version && !obj.completed) {
                     obj.complete();
                 }
@@ -28,7 +28,7 @@ var TodoList = Swarm.Vector.extend('TodoList', {
     removeCompleted: function () {
         // TODO one op - repeated spec? long spec?
         var rms = [], rm;
-        this.objects.forEach(function(obj){
+        this.forEach(function(obj){
             if (obj.completed) {
                 rms.push(obj);
             }
@@ -44,7 +44,7 @@ var TodoList = Swarm.Vector.extend('TodoList', {
             completed: 0,
             left: 0
         };
-        this.objects.forEach(function (obj) {
+        this.forEach(function (obj) {
             ret.entries++;
             if (obj.completed) {
                 ret.completed++;
