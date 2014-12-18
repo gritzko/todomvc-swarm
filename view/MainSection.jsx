@@ -41,7 +41,7 @@ var MainSection = React.createClass({
             return <noscript/>;
         }
 
-        var todos = todoList.objects.map(function (obj, index) {
+        var todos = todoList.map(function (obj, index) {
             var itemId = obj._id;
             return (
                 <TodoItemView
