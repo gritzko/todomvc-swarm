@@ -84,11 +84,11 @@ app.get(/[/+A-Za-z0-9_~]*/, function (req, res) {
 });
 
 
-// use file storage
-var fileStorage = new Swarm.FileStorage(argv.store);
+// use level storage
+var levelStorage = new Swarm.LevelStorage(argv.store);
 
 // create Swarm Host
-app.swarmHost = new Swarm.Host('swarm~nodejs', 0, fileStorage);
+app.swarmHost = new Swarm.Host('swarm~nodejs', 0, levelStorage);
 Swarm.env.localhost = app.swarmHost;
 
 // start the HTTP server
